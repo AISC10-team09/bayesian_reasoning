@@ -82,16 +82,22 @@ def run_full_experiment(history: str, candidate1: str, candidate2: str, evidence
 
     # Query the LLM for each prompt.
     print("Querying LLM for prior probabilities...")
-    prior_response_c1 = llm.get_output_probabilities(prior_prompt_c1)
-    prior_response_c2 = llm.get_output_probabilities(prior_prompt_c2)
+    # prior_response_c1 = llm.get_output_probabilities(prior_prompt_c1)
+    # prior_response_c2 = llm.get_output_probabilities(prior_prompt_c2)
+    prior_response_c1 = llm.get_output_probabilities(prior_prompt_c1, candidate1)
+    prior_response_c2 = llm.get_output_probabilities(prior_prompt_c2, candidate2)
 
     print("Querying LLM for likelihood probabilities...")
-    likelihood_response_c1 = llm.get_output_probabilities(likelihood_prompt_c1)
-    likelihood_response_c2 = llm.get_output_probabilities(likelihood_prompt_c2)
+    # likelihood_response_c1 = llm.get_output_probabilities(likelihood_prompt_c1)
+    # likelihood_response_c2 = llm.get_output_probabilities(likelihood_prompt_c2)
+    likelihood_response_c1 = llm.get_output_probabilities(likelihood_prompt_c1, evidence)
+    likelihood_response_c2 = llm.get_output_probabilities(likelihood_prompt_c2, evidence)
 
-    print("Querying LLM for posterior probabilities...")
-    posterior_response_c1 = llm.get_output_probabilities(posterior_prompt_c1)
-    posterior_response_c2 = llm.get_output_probabilities(posterior_prompt_c2)
+    # print("Querying LLM for posterior probabilities...")
+    # posterior_response_c1 = llm.get_output_probabilities(posterior_prompt_c1)
+    # posterior_response_c2 = llm.get_output_probabilities(posterior_prompt_c2)
+    posterior_response_c1 = llm.get_output_probabilities(posterior_prompt_c1, candidate1)
+    posterior_response_c2 = llm.get_output_probabilities(posterior_prompt_c2, candidate2)
 
     # Compute overall sentence probabilities from token-level log probabilities.
     prior_prob_c1 = llm.compute_sentence_probability(prior_response_c1.get("token_logprobs", []))
@@ -104,8 +110,8 @@ def run_full_experiment(history: str, candidate1: str, candidate2: str, evidence
     # Compute BCE using the formula:
     # BCE = | log(P(c1|E,H)/P(c2|E,H)) - [ log(P(E|c1,H)/P(E|c2,H)) + log(P(c1|H)/P(c2|H) ) ] |
     bce_value = compute_bce(prior_prob_c1, prior_prob_c2,
-                            likelihood_c1, likelihood_c2,
-                            posterior_prob_c1, posterior_prob_c2)
+                             likelihood_c1, likelihood_c2,
+                             posterior_prob_c1, posterior_prob_c2)
 
     # Print and return the results.
     print("\n--- Experiment Results ---")
