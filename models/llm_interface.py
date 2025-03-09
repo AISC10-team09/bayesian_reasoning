@@ -137,20 +137,63 @@ class LLMInterface:
             print("Error in local inference:", e)
             return {}
 
-    def compute_sentence_probability(self, token_logprobs: List[float]) -> float:
-        """
-        Computes the overall probability of a sentence from token log probabilities.
+    def compute_sentence_probability(self, prompt: str, sentence: str) -> float:
+    """
+    Computes the probability of generating a given sentence token-by-token, conditioned on an initial prompt.
 
-        It sums the log probabilities (ignoring any None values) and exponentiates the sum.
+    Args:
+        prompt (str): The initial context or prompt.
+        sentence (str): The sentence whose probability you want to calculate.
 
-        Args:
-            token_logprobs (List[float]): List of token log probabilities.
+    Returns:
+        float: The computed sentence probability.
+    """
+    # Concatenate the prompt and sentence
+    full_text = prompt + sentence
 
-        Returns:
-            float: The overall sentence probability.
-        """
-        valid_logprobs = [lp for lp in token_logprobs if lp is not None]
-        if not valid_logprobs:
+    # Tokenize prompt and full text separately
+    prompt_tokens = self.tokenizer.tokenize(prompt)
+    full_tokens = self.tokenizer.tokenize(full_text)
+
+    # Sentence tokens are the tokens appearing after the prompt tokens
+    sentence_tokens = full_tokens[len(prompt_tokens):]
+
+    total_logprob = 0.0
+    current_prompt = prompt  # Initially, the provided prompt
+
+    for idx, token in enumerate(sentence_tokens):
+        # Get probabilities from the current prompt
+        response = self.get_output_probabilities(current_prompt)
+
+        # Validate response
+        if not response or "tokens" not in response or "token_logprobs" not in response:
+            print(f"[Error] Invalid response at token index {idx} ('{token}').")
             return 0.0
-        total_logprob = sum(valid_logprobs)
-        return math.exp(total_logprob)
+
+        tokens = response["tokens"]
+        token_logprobs = response["token_logprobs"]
+
+        # For next-token probability, the relevant token is always the first token generated after the prompt.
+        # The token we are interested in is the first token that appears after the current prompt.
+        if len(tokens) <= len(self.tokenizer.tokenize(current_prompt)):
+            print(f"[Error] No tokens generated beyond prompt at index {idx} ('{token}').")
+            return 0.0
+
+        # Find the position of the next predicted token
+        next_token_idx = len(self.tokenizer.tokenize(current_prompt))
+
+        generated_token = tokens[next_token_idx]
+        logprob = token_logprobs[next_token_idx]
+
+        # Check if the generated token matches the expected token
+        if generated_token != token:
+            print(f"[Warning] Mismatch at token index {idx}: expected '{token}', got '{generated_token}'.")
+
+        # Accumulate log probabilities regardless of mismatch to continue the calculation
+        total_logprob += logprob
+
+        # Update prompt for next iteration
+        current_prompt += token
+
+    # Return the exponentiated total log probability
+    return math.exp(total_logprob)
