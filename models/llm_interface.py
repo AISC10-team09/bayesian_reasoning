@@ -1,4 +1,6 @@
 """
+llm_interface.py
+
 This module provides an interface to interact with large language models
 to extract token-level probability estimates. It supports two backends:
 - "openai": Uses the OpenAI API.
@@ -29,7 +31,7 @@ class LLMInterface:
         backend (str): "openai" or "local". Default is "openai".
         max_tokens (int): Maximum number of tokens to generate for each call.
         temperature (float): Sampling temperature for generation.
-        logprobs (int): Number of log probabilities to request per token.
+        logprobs (int): Number of log probabilities (top_logprobs) to request per token.
     """
 
     def __init__(self, model_name: str, api_key: str = None, backend: str = "openai",
@@ -43,7 +45,7 @@ class LLMInterface:
             backend (str, optional): Either "openai" or "local". Default is "openai".
             max_tokens (int, optional): Maximum tokens to generate. Default is 50.
             temperature (float, optional): Sampling temperature. Default is 0.7.
-            logprobs (int, optional): Number of log probabilities to return per token. Default is 5.
+            logprobs (int, optional): Number of top_logprobs to return per token. Default is 5.
         """
         self.model_name = model_name
         self.api_key = api_key
@@ -68,9 +70,9 @@ class LLMInterface:
 
     def get_output_probabilities(self, prompt: str) -> Dict[str, Any]:
         """
-        Sends a prompt to the LLM and retrieves token-level probabilities.
+        Sends a prompt to the LLM and retrieves token-level probability estimates.
 
-        For "openai", calls the OpenAI API to get token-level log probabilities.
+        For "openai", calls the OpenAI API to get token-level top_logprobs.
         For "local", uses Hugging Face Transformers to compute log probabilities.
 
         Args:
@@ -79,7 +81,7 @@ class LLMInterface:
         Returns:
             dict: Contains:
                 - 'tokens': List of tokens.
-                - 'token_logprobs': List of log probabilities for each token.
+                - 'top_logprobs': List of log probabilities (from the top_logprobs) for each token.
         """
         if self.backend == "openai":
             return self.get_output_probabilities_openai(prompt)
@@ -88,7 +90,11 @@ class LLMInterface:
 
     def get_output_probabilities_openai(self, prompt: str) -> Dict[str, Any]:
         """
-        Retrieves token-level probabilities using the OpenAI API.
+        Retrieves token-level probability estimates using the OpenAI API.
+        Expects the response to contain the 'top_logprobs' field.
+
+        Raises:
+            ValueError: If the required 'top_logprobs' field is missing.
         """
         try:
             response = openai.Completion.create(
@@ -100,16 +106,28 @@ class LLMInterface:
                 echo=True  # Echo the prompt tokens along with the generated ones.
             )
             choice = response["choices"][0]
-            tokens = choice["logprobs"]["tokens"]
-            token_logprobs = choice["logprobs"]["token_logprobs"]
-            return {"tokens": tokens, "token_logprobs": token_logprobs}
+            logprobs_dict = choice.get("logprobs", {})
+            if "top_logprobs" not in logprobs_dict:
+                earlier_tokens = logprobs_dict.get("tokens", [])
+                earlier_logprobs = logprobs_dict.get("token_logprobs", [])
+                cumulative_logprob = sum(lp for lp in earlier_logprobs if lp is not None)
+                error_message = (
+                    "Required top_logprobs not present in the response.\n"
+                    f"Earlier tokens: {earlier_tokens}\n"
+                    f"Cumulative log probability of earlier tokens: {cumulative_logprob}\n"
+                    f"Full logprobs response: {logprobs_dict}"
+                )
+                raise ValueError(error_message)
+            tokens = logprobs_dict["tokens"]
+            top_logprobs = logprobs_dict["top_logprobs"]
+            return {"tokens": tokens, "top_logprobs": top_logprobs}
         except Exception as e:
             print("Error calling OpenAI API:", e)
             return {}
 
     def get_output_probabilities_local(self, prompt: str) -> Dict[str, Any]:
         """
-        Retrieves token-level probabilities using a local Hugging Face Transformers model.
+        Retrieves token-level probability estimates using a local Hugging Face Transformers model.
         This implementation computes the log probability of each token in the prompt.
         """
         try:
@@ -132,68 +150,68 @@ class LLMInterface:
             tokens = self.tokenizer.convert_ids_to_tokens(input_ids[0])
             # The first token has no preceding context, so we insert a None.
             token_logprobs = [None] + token_logprobs
-            return {"tokens": tokens, "token_logprobs": token_logprobs}
+            # For consistency, we return the computed log probabilities as "top_logprobs".
+            return {"tokens": tokens, "top_logprobs": token_logprobs}
         except Exception as e:
             print("Error in local inference:", e)
             return {}
 
     def compute_sentence_probability(self, prompt: str, sentence: str) -> float:
-    """
-    Computes the probability of generating a given sentence token-by-token, conditioned on an initial prompt.
+        """
+        Computes the probability of generating a given sentence token-by-token,
+        conditioned on an initial prompt.
 
-    Args:
-        prompt (str): The initial context or prompt.
-        sentence (str): The sentence whose probability you want to calculate.
+        Args:
+            prompt (str): The initial context or prompt.
+            sentence (str): The sentence whose probability you want to calculate.
 
-    Returns:
-        float: The computed sentence probability.
-    """
-    # Concatenate the prompt and sentence
-    full_text = prompt + sentence
+        Returns:
+            float: The computed sentence probability.
+        """
+        # Concatenate the prompt and sentence
+        full_text = prompt + sentence
 
-    # Tokenize prompt and full text separately
-    prompt_tokens = self.tokenizer.tokenize(prompt)
-    full_tokens = self.tokenizer.tokenize(full_text)
+        # Tokenize prompt and full text separately
+        prompt_tokens = self.tokenizer.tokenize(prompt)
+        full_tokens = self.tokenizer.tokenize(full_text)
 
-    # Sentence tokens are the tokens appearing after the prompt tokens
-    sentence_tokens = full_tokens[len(prompt_tokens):]
+        # Sentence tokens are the tokens appearing after the prompt tokens
+        sentence_tokens = full_tokens[len(prompt_tokens):]
 
-    total_logprob = 0.0
-    current_prompt = prompt  # Initially, the provided prompt
+        total_logprob = 0.0
+        current_prompt = prompt  # Initially, the provided prompt
 
-    for idx, token in enumerate(sentence_tokens):
-        # Get probabilities from the current prompt
-        response = self.get_output_probabilities(current_prompt)
+        for idx, token in enumerate(sentence_tokens):
+            # Get probabilities from the current prompt
+            response = self.get_output_probabilities(current_prompt)
 
-        # Validate response
-        if not response or "tokens" not in response or "token_logprobs" not in response:
-            print(f"[Error] Invalid response at token index {idx} ('{token}').")
-            return 0.0
+            # Validate response: it should contain both tokens and top_logprobs
+            if not response or "tokens" not in response or "top_logprobs" not in response:
+                print(f"[Error] Invalid response at token index {idx} ('{token}').")
+                return 0.0
 
-        tokens = response["tokens"]
-        token_logprobs = response["token_logprobs"]
+            tokens = response["tokens"]
+            top_logprobs = response["top_logprobs"]
 
-        # For next-token probability, the relevant token is always the first token generated after the prompt.
-        # The token we are interested in is the first token that appears after the current prompt.
-        if len(tokens) <= len(self.tokenizer.tokenize(current_prompt)):
-            print(f"[Error] No tokens generated beyond prompt at index {idx} ('{token}').")
-            return 0.0
+            # For next-token probability, the relevant token is always the first token generated after the prompt.
+            if len(tokens) <= len(self.tokenizer.tokenize(current_prompt)):
+                print(f"[Error] No tokens generated beyond prompt at index {idx} ('{token}').")
+                return 0.0
 
-        # Find the position of the next predicted token
-        next_token_idx = len(self.tokenizer.tokenize(current_prompt))
+            # The position of the next token in the generated output
+            next_token_idx = len(self.tokenizer.tokenize(current_prompt))
 
-        generated_token = tokens[next_token_idx]
-        logprob = token_logprobs[next_token_idx]
+            generated_token = tokens[next_token_idx]
+            logprob = top_logprobs[next_token_idx]
 
-        # Check if the generated token matches the expected token
-        if generated_token != token:
-            print(f"[Warning] Mismatch at token index {idx}: expected '{token}', got '{generated_token}'.")
+            # Check if the generated token matches the expected token
+            if generated_token != token:
+                print(f"[Warning] Mismatch at token index {idx}: expected '{token}', got '{generated_token}'.")
 
-        # Accumulate log probabilities regardless of mismatch to continue the calculation
-        total_logprob += logprob
+            # Accumulate log probabilities regardless of mismatch
+            total_logprob += logprob
 
-        # Update prompt for next iteration
-        current_prompt += token
+            # Update prompt for the next iteration by appending the expected token
+            current_prompt += token
 
-    # Return the exponentiated total log probability
-    return math.exp(total_logprob)
+        return math.exp(total_logprob) if total_logprob != 0 else 0.0
