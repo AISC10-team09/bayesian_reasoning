@@ -156,18 +156,51 @@ class LLMInterface:
             print("Error in local inference:", e)
             return {}
 
-    def compute_sentence_probability(self, prompt: str, sentence: str) -> float:
+    def compute_sentence_probability(
+        self, 
+        prompt: str, 
+        sentence: str, 
+        log_details: bool = False, 
+        topk: int = None, 
+        experiment_id: str = None
+    ) -> Union[float, Dict[str, Any]]:
         """
         Computes the probability of generating a given sentence token-by-token,
-        conditioned on an initial prompt.
+        conditioned on an initial prompt. Optionally logs detailed information at each
+        autoregressive step.
 
         Args:
             prompt (str): The initial context or prompt.
-            sentence (str): The sentence whose probability you want to calculate.
+            sentence (str): The sentence whose probability is to be calculated.
+            log_details (bool, optional): If True, returns a detailed log dictionary along
+                                          with the final probability.
+            topk (int, optional): If specified, limits the logged top_logprobs to the top k entries.
+            experiment_id (str, optional): An optional identifier for the experiment; if not provided,
+                                           one is generated automatically.
 
         Returns:
-            float: The computed sentence probability.
+            If log_details is False: 
+                float - The final probability of the sentence.
+            If log_details is True:
+                dict - A dictionary containing:
+                  - "experiment_id": Unique experiment identifier.
+                  - "conversation_history": The initial prompt.
+                  - "data_X": The expected sentence.
+                  - "model": Model name.
+                  - "model_parameters": Dictionary of key parameters.
+                  - "steps": List of step logs, each with:
+                        * step index,
+                        * current prompt,
+                        * expected token,
+                        * generated token,
+                        * selected log probability,
+                        * top_logprobs (optionally trimmed to topk).
+                  - "cumulative_logprob": Sum of selected token log probabilities.
+                  - "final_probability": Exponentiated cumulative log probability.
         """
+        if experiment_id is None:
+            experiment_id = str(uuid.uuid4())
+
         # Concatenate the prompt and sentence
         full_text = prompt + sentence
 
@@ -175,43 +208,135 @@ class LLMInterface:
         prompt_tokens = self.tokenizer.tokenize(prompt)
         full_tokens = self.tokenizer.tokenize(full_text)
 
-        # Sentence tokens are the tokens appearing after the prompt tokens
+        # Sentence tokens are those appearing after the prompt tokens
         sentence_tokens = full_tokens[len(prompt_tokens):]
 
         total_logprob = 0.0
-        current_prompt = prompt  # Initially, the provided prompt
+        current_prompt = prompt  # Start with the initial prompt
+        steps = []  # To record detailed logs for each autoregressive step
 
-        for idx, token in enumerate(sentence_tokens):
-            # Get probabilities from the current prompt
+        for idx, expected_token in enumerate(sentence_tokens):
+            # Query the model with the current prompt
             response = self.get_output_probabilities(current_prompt)
 
-            # Validate response: it should contain both tokens and top_logprobs
+            # Validate the response structure
             if not response or "tokens" not in response or "top_logprobs" not in response:
-                print(f"[Error] Invalid response at token index {idx} ('{token}').")
-                return 0.0
+                error_msg = f"[Error] Invalid response at step {idx} for token '{expected_token}'."
+                if log_details:
+                    steps.append({
+                        "step": idx,
+                        "current_prompt": current_prompt,
+                        "error": error_msg
+                    })
+                    return {
+                        "experiment_id": experiment_id,
+                        "conversation_history": prompt,
+                        "data_X": sentence,
+                        "model": self.model_name,
+                        "model_parameters": {
+                            "max_tokens": self.max_tokens,
+                            "temperature": self.temperature,
+                            "logprobs": self.logprobs
+                        },
+                        "steps": steps,
+                        "cumulative_logprob": total_logprob,
+                        "final_probability": 0.0,
+                        "error": error_msg
+                    }
+                else:
+                    print(error_msg)
+                    return 0.0
 
             tokens = response["tokens"]
             top_logprobs = response["top_logprobs"]
 
-            # For next-token probability, the relevant token is always the first token generated after the prompt.
-            if len(tokens) <= len(self.tokenizer.tokenize(current_prompt)):
-                print(f"[Error] No tokens generated beyond prompt at index {idx} ('{token}').")
-                return 0.0
+            # Determine the index for the next token (i.e., after current prompt tokens)
+            current_prompt_tokens = self.tokenizer.tokenize(current_prompt)
+            if len(tokens) <= len(current_prompt_tokens):
+                error_msg = f"[Error] No tokens generated beyond prompt at step {idx} for token '{expected_token}'."
+                if log_details:
+                    steps.append({
+                        "step": idx,
+                        "current_prompt": current_prompt,
+                        "error": error_msg
+                    })
+                    return {
+                        "experiment_id": experiment_id,
+                        "conversation_history": prompt,
+                        "data_X": sentence,
+                        "model": self.model_name,
+                        "model_parameters": {
+                            "max_tokens": self.max_tokens,
+                            "temperature": self.temperature,
+                            "logprobs": self.logprobs
+                        },
+                        "steps": steps,
+                        "cumulative_logprob": total_logprob,
+                        "final_probability": 0.0,
+                        "error": error_msg
+                    }
+                else:
+                    print(error_msg)
+                    return 0.0
 
-            # The position of the next token in the generated output
-            next_token_idx = len(self.tokenizer.tokenize(current_prompt))
-
+            next_token_idx = len(current_prompt_tokens)
             generated_token = tokens[next_token_idx]
-            logprob = top_logprobs[next_token_idx]
+            selected_logprob = top_logprobs[next_token_idx]
 
-            # Check if the generated token matches the expected token
-            if generated_token != token:
-                print(f"[Warning] Mismatch at token index {idx}: expected '{token}', got '{generated_token}'.")
+            # Optionally trim the top_logprobs to topk entries if provided and if it's a dict/list
+            if topk is not None:
+                # If top_logprobs is a dict, we assume it contains more entries; otherwise, if it's a list, slice it.
+                if isinstance(selected_logprob, dict):
+                    trimmed_top_logprobs = dict(list(selected_logprob.items())[:topk])
+                elif isinstance(selected_logprob, list):
+                    trimmed_top_logprobs = selected_logprob[:topk]
+                else:
+                    trimmed_top_logprobs = selected_logprob
+            else:
+                trimmed_top_logprobs = selected_logprob
 
-            # Accumulate log probabilities regardless of mismatch
-            total_logprob += logprob
+            # Log a warning if the generated token doesn't match the expected token.
+            if generated_token != expected_token:
+                warning_msg = f"[Warning] At step {idx}: expected '{expected_token}', got '{generated_token}'."
+                print(warning_msg)
+            else:
+                warning_msg = None
 
-            # Update prompt for the next iteration by appending the expected token
-            current_prompt += token
+            # Record the step details
+            step_log = {
+                "step": idx,
+                "current_prompt": current_prompt,
+                "expected_token": expected_token,
+                "generated_token": generated_token,
+                "selected_logprob": selected_logprob,
+                "top_logprobs": trimmed_top_logprobs
+            }
+            if warning_msg:
+                step_log["warning"] = warning_msg
+            steps.append(step_log)
 
-        return math.exp(total_logprob) if total_logprob != 0 else 0.0
+            # Accumulate the log probability
+            total_logprob += selected_logprob
+
+            # Update the prompt by appending the expected token (to mimic autoregressive generation)
+            current_prompt += expected_token
+
+        final_probability = math.exp(total_logprob) if total_logprob != 0 else 0.0
+
+        if log_details:
+            return {
+                "experiment_id": experiment_id,
+                "conversation_history": prompt,
+                "data_X": sentence,
+                "model": self.model_name,
+                "model_parameters": {
+                    "max_tokens": self.max_tokens,
+                    "temperature": self.temperature,
+                    "logprobs": self.logprobs
+                },
+                "steps": steps,
+                "cumulative_logprob": total_logprob,
+                "final_probability": final_probability
+            }
+        else:
+            return final_probability
