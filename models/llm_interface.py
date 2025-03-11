@@ -8,7 +8,8 @@ to extract token-level probability estimates. It supports two backends:
 """
 
 import math
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
+import uuid
 
 # Attempt to import OpenAI library for API-based access.
 try:
