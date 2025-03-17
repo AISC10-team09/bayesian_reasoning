@@ -34,28 +34,42 @@ class LLMInterface_2:
         self.tokenizer = GPT2Tokenizer.from_pretrained(self.model_name)
         self.model = GPT2LMHeadModel.from_pretrained(self.model_name)
         self.model.eval()  # set the model to evaluation mode.
-
+        
+        # Check for available accelerators
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            # For Apple Silicon (M1/M2/M3)
+            self.device = torch.device("mps")
+        else:
+            self.device = torch.device("cpu")
+        print(f"Using device: {self.device}")
 
     def get_output_probabilities(self, prompt: str) -> Dict[str, Any]:
         """
         retrieves token-level probability
         """
         try:
- 
-            tokens_input = self.tokenizer.encode(prompt, return_tensors = "pt")     # tokenize and encode the input prompt
+            # Move model to device if not already there
+            self.model = self.model.to(self.device)
+            
+            # Encode and move to device
+            tokens_input = self.tokenizer.encode(prompt, return_tensors="pt").to(self.device)
 
             # get model outputs without gradient tracking
             with torch.no_grad():
                 outputs = self.model(tokens_input)
                 logits = outputs.logits  # shape: [1, seq_len, vocab_size]
 
-            tokens_output = torch.argmax(logits, dim = -1).squeeze(0)
-            # output = self.tokenizer.decode(tokens_output)
-            # print("output: ", output)
+            # Make sure to keep tensors on the same device
+            tokens_output = torch.argmax(logits, dim=-1).squeeze(0)
+            log_probs = F.log_softmax(logits, dim=-1).squeeze(0)  # shape: [seq_len, vocab_size]
 
-            log_probs = F.log_softmax(logits, dim = -1).squeeze(0)  # shape: [1, seq_len-1, vocab_size]
-
-            return {"tokens": tokens_output, "logprobs": log_probs}
+            # Return tensors detached from computation graph and moved to CPU for easier handling
+            return {
+                "tokens": tokens_output.detach().cpu(),
+                "logprobs": log_probs.detach()  # Keep on device for next computation
+            }
         
         except Exception as e:
             print("error in inference:", e)
@@ -101,10 +115,10 @@ class LLMInterface_2:
 
         # Tokenize the full text (prompt + expected response)
         full_text = prompt + expected_response
-        full_tokens = self.tokenizer.encode(full_text, return_tensors="pt")[0]
+        full_tokens = self.tokenizer.encode(full_text, return_tensors="pt")[0].to(self.device)
         
         # Tokenize just the prompt to find where the response starts
-        prompt_tokens = self.tokenizer.encode(prompt, return_tensors="pt")[0]
+        prompt_tokens = self.tokenizer.encode(prompt, return_tensors="pt")[0].to(self.device)
         prompt_length = len(prompt_tokens)
         
         # Get the expected response tokens
