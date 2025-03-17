@@ -99,42 +99,33 @@ class LLMInterface_2:
     
         if experiment_id is None: experiment_id = str(uuid.uuid4())
 
-        # tokens_prompt = self.tokenizer.tokenize(prompt)     # tokenize the prompt
-
-        # tokenize the response
-        tokens_expected_response = []
-        expected_response_words = expected_response.split()
-        # print("expected response words:", expected_response_words)
-        # print(expected_response_words[0])
-
-        for i in range(len(expected_response_words)):
-            tokens = self.tokenizer.tokenize(expected_response_words[i])
-            for j in range(len(tokens)): tokens_expected_response.append(tokens[j])
-                            
+        # Tokenize the full text (prompt + expected response)
+        full_text = prompt + expected_response
+        full_tokens = self.tokenizer.encode(full_text, return_tensors="pt")[0]
+        
+        # Tokenize just the prompt to find where the response starts
+        prompt_tokens = self.tokenizer.encode(prompt, return_tensors="pt")[0]
+        prompt_length = len(prompt_tokens)
+        
+        # Get the expected response tokens
+        response_tokens = full_tokens[prompt_length:]
+        
         total_logprob = 0.0
-        prompt_current = prompt  # start with the initial prompt
-        steps = []  # to record detailed logs for each autoregressive step
+        current_prompt = prompt
+        steps = []
 
-        # print("len(tokens_expected_response):", len(tokens_expected_response))
-        # print("tokens expected response:", tokens_expected_response)
-
-        # print("len(tokens_expected_response_enc):", len(tokens_expected_response_enc))
-        # print("tokens expected response end:", tokens_expected_response_enc)
-
-
-        for idx, token_expected in enumerate(tokens_expected_response):
-
-            # query the model with the current prompt        
-            response = self.get_output_probabilities(prompt_current)
-
-            # validate the response structure
+        for idx, token_id in enumerate(response_tokens):
+            # Query the model with the current prompt
+            response = self.get_output_probabilities(current_prompt)
+            
+            # Validate the response structure
             if not response or "tokens" not in response or "logprobs" not in response:
-                error_msg = f"[error] invalid response at step {idx} for token '{token_expected}'."
+                error_msg = f"[error] invalid response at step {idx}."
                 if log_details:
                     steps.append({
                         "step": idx,
-                        "current_prompt": prompt_current,
-                        "expected_token": None,
+                        "current_prompt": current_prompt,
+                        "expected_token": self.tokenizer.decode([token_id.item()]),
                         "log_prob": 0.00,
                         "error": error_msg
                     })
@@ -151,44 +142,32 @@ class LLMInterface_2:
                     print(error_msg)
                     return 0.0
             
-            # print("idx:", idx, "prompt current: ", prompt_current)
-            # print("idx:", idx, "expected token:", token_expected)
-            # print("idx:", idx, "len(tokens):", response["tokens"].shape, "len(logprobs):", response["logprobs"].shape)
-
-            token_expected_enc = self.tokenizer.encode(token_expected)
-            # print(token_expected_enc)
-        
-            # find the log probability for the token corresponding to the expected response
-            logprobs = response["logprobs"] # shape: [response_len, vocab_size]
-            logprob = logprobs[-1, token_expected_enc]
-            # print("logprob shape:", logprob.shape)
-
-            # print("idx:", idx, "logprob:", logprob.item())
-
-            # record the step details
-            if log_details == True:
+            # Get the log probability for the expected token
+            logprobs = response["logprobs"]  # shape: [seq_len, vocab_size]
+            logprob = logprobs[-1, token_id].item()
+            
+            # Get the token string for logging
+            token_str = self.tokenizer.decode([token_id.item()])
+            
+            # Record the step details
+            if log_details:
                 step_log = {
                     "step": idx,
-                    "current_prompt": prompt_current,
-                    "expected_token": token_expected,
+                    "current_prompt": current_prompt,
+                    "expected_token": token_str,
                     "logprob": logprob,
                     "error_msg": None
                 }
-
                 steps.append(step_log)
-
-            # determine the next prompt (to mimic autoregressive generation)
-            # prompt_next = tokens_expected_response[idx + 1]
-            # prompt_current += prompt_next
-            prompt_current = prompt + "".join(tokens_expected_response[0:idx+1])  
-
-            # print("prompt_next:", prompt_next)
-
-            total_logprob += logprob    # accumulate the log probability
-            final_probability = math.exp(total_logprob) if total_logprob != 0 else 0.0
-
-            # print("idx:", idx, "final probability:", final_probability)
-
+            
+            # Update the prompt for the next iteration
+            current_prompt = current_prompt + token_str
+            
+            # Accumulate the log probability
+            total_logprob += logprob
+        
+        final_probability = math.exp(total_logprob) if total_logprob > -float('inf') else 0.0
+        
         if log_details:
             return {
                 "experiment_id": experiment_id,
