@@ -154,7 +154,7 @@ if __name__ == "__main__":
 
     # Initialize the LLM interface.
     # For testing, we use the local backend with a lightweight model (e.g., GPT-2).
-    llm = LLMInterface_2(model_name="gpt2-xl", backend="local")
+    llm = LLMInterface_2(model_name="gpt2", backend="local")
 
     # Run the experiment across all candidate pairs.
     experiment_results = run_full_experiment_multi(
