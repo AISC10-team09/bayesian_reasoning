@@ -47,6 +47,10 @@ from experiments.prompt_variations import get_all_variations, generate_all_promp
 from utils.data_io import save_results, load_results, setup_logging
 from utils.plot import plot_histogram, plot_scatter, plot_line_chart
 
+import json
+from jsonschema import validate
+from jsonschema.exceptions import ValidationError, SchemaError
+
 
 # Create a dummy LLM interface that always returns fixed token log probabilities.
 class DummyLLMInterface(LLMInterface):
@@ -269,6 +273,33 @@ class TestPlotUtilities(unittest.TestCase):
             plot_line_chart(x, y, title="Test Line Chart", xlabel="X", ylabel="sin(X)", show=False)
         except Exception as e:
             self.fail(f"plot_line_chart raised an exception: {e}")
+
+
+class TestJsonData(unittest.TestCase):
+    def test_json_data(self):
+        try:
+            with open('data/schema.json', 'r') as f_schema:
+                schema = json.load(f_schema)
+
+                try:
+                    with open('data/data.json', 'r') as f_data:
+                        data = json.load(f_data)
+                except IOError:
+                    print("could not read file:", f_data)
+
+                for i in data["bayesian_reasoning"]: print(i["class_type"])
+
+                try:
+                    validate(instance = data, schema = schema)
+                except ValidationError as ex_v:
+                    print("validation error: ", ex_v)
+                except SchemaError as ex_s:
+                    print("schema error: ", ex_s)
+                else:
+                    print("valid json data")
+
+        except IOError:
+            print("could not read file:", f_schema)
 
 
 if __name__ == '__main__':
