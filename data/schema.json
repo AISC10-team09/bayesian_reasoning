@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "bayesian_reasoning": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "conversation_history": {
+            "type": "string",
+            "description": "the conversation history"
+          },
+          "candidate_classes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+			"minItems": 2,
+			"uniqueItems": true,
+            "description": "list of candidate classes"
+          },
+          "evidence": {
+            "type": "string",
+            "description": "justification or rationale for the classification"
+          },
+          "class_elicitation": {
+            "type": "string",
+            "description": "prompt used to elicit a candidate class"
+          },
+          "evidence_elicitation": {
+            "type": "string",
+            "description": "prompt used to elicit the evidence"
+          }
+        },
+        "required": [
+          "conversation_history",
+          "candidate_classes",
+          "evidence",
+          "class_elicitation",
+          "evidence_elicitation"
+        ]
+      }
+    }
+  },
+  "required": ["bayesian_reasoning"]
+}

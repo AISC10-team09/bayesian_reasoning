@@ -1,0 +1,20 @@
+{
+	"bayesian_reasoning": [
+		{
+			"class_type": "novelists",
+			"conversation_history": "We've been discussing literary styles and historical contexts in literature.",
+			"candidate_classes": ["William Shakespeare", "Oscar Wilde"],
+			"evidence": "Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.",
+			"class_elicitation": " My favourite author is",
+			"evidence_elicitation": " I prefer reading"
+		},
+		{
+			"class_type": "architectural_styles",
+			"conversation_history": "We've been discussing European architectural styles.",
+			"candidate_classes": ["Gothic", "Beaux Arts"],
+			"evidence": "that emphasizes height and light through tall windows and spires.",
+			"class_elicitation": " My favourite architectural style is",
+			"evidence_elicitation": " I prefer an architectural style"
+		}
+	]
+}
