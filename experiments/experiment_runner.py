@@ -22,7 +22,7 @@ This implementation uses a dual approach:
 
 import math
 from itertools import combinations
-from models.llm_interface_2 import LLMInterface
+from models.llm_interface import LLMInterface
 from analysis.bce_calculations import compute_bce
 def run_full_experiment_multi(
     history: str,
