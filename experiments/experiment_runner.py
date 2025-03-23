@@ -22,38 +22,16 @@ This implementation uses a dual approach:
 
 import math
 from itertools import combinations
-from models.llm_interface import LLMInterface
-from models.prompt_templates import generate_likelihood_prompt
+from models.llm_interface_2 import LLMInterface
 from analysis.bce_calculations import compute_bce
-
-def generate_prior_prompt_for_candidate(history: str, candidate: str) -> str:
-    """
-    Generate a prompt to elicit the prior probability for a specific candidate.
-    
-    Args:
-        history (str): The conversation history.
-        candidate (str): The candidate class (e.g., "Shakespeare").
-    
-    Returns:
-        str: The prompt for eliciting the prior probability.
-    """
-    return f"{history}\nBased on our conversation, what is the probability that you are a fan of {candidate}?"
-
-def generate_posterior_prompt_for_candidate(history: str, candidate: str, evidence: str) -> str:
-    """
-    Generate a prompt to elicit the posterior probability for a specific candidate after evidence.
-    
-    Args:
-        history (str): The conversation history.
-        candidate (str): The candidate class (e.g., "Shakespeare").
-        evidence (str): The evidence provided.
-    
-    Returns:
-        str: The prompt for eliciting the posterior probability.
-    """
-    return f"{history}\nAfter hearing \"{evidence}\", what is the probability that you are a fan of {candidate}?"
-
-def run_full_experiment_multi(history: str, candidate_classes: list, evidence: str, llm: LLMInterface):
+def run_full_experiment_multi(
+    history: str,
+    candidate_classes: list,
+    evidence_list: list,
+    class_elicitation: str,
+    evidence_elicitation: str,
+    llm: LLMInterface,
+):
     """
     Runs the full experimental pipeline across multiple candidate classes.
     
@@ -79,76 +57,106 @@ def run_full_experiment_multi(history: str, candidate_classes: list, evidence: s
     results = {}
     
     # Iterate over all unique pairs of candidate classes.
-    for candidate1, candidate2 in combinations(candidate_classes, 2):
+    for class1, class2 in combinations(candidate_classes, 2):
+        for evidence in evidence_list:
         # Generate prompts for each candidate.
-        prior_prompt_c1 = generate_prior_prompt_for_candidate(history, candidate1)
-        prior_prompt_c2 = generate_prior_prompt_for_candidate(history, candidate2)
-        
-        likelihood_prompt_c1 = generate_likelihood_prompt(history, candidate1, evidence)
-        likelihood_prompt_c2 = generate_likelihood_prompt(history, candidate2, evidence)
-        
-        posterior_prompt_c1 = generate_posterior_prompt_for_candidate(history, candidate1, evidence)
-        posterior_prompt_c2 = generate_posterior_prompt_for_candidate(history, candidate2, evidence)
-        
+            prior_prompt = history + class_elicitation
+
+            likelihood_prompt_c1 = (
+                history + class_elicitation + class1 + evidence_elicitation
+            )
+            likelihood_prompt_c2 = (
+                history + class_elicitation + class2 + evidence_elicitation
+            )
+
+            posterior_prompt = (
+                history + evidence_elicitation + evidence + class_elicitation
+            )
         # Compute probabilities.
         # For prior and posterior, the expected text is the candidate's name.
         # For likelihood, the expected text is the evidence.
-        prior_prob_c1 = llm.compute_sentence_probability(prior_prompt_c1, candidate1)
-        prior_prob_c2 = llm.compute_sentence_probability(prior_prompt_c2, candidate2)
+            prior_c1 = llm.compute_probability(prior_prompt, class1)
+            prior_c2 = llm.compute_probability(prior_prompt, class2)
         
-        likelihood_prob_c1 = llm.compute_sentence_probability(likelihood_prompt_c1, evidence)
-        likelihood_prob_c2 = llm.compute_sentence_probability(likelihood_prompt_c2, evidence)
-        
-        posterior_prob_c1 = llm.compute_sentence_probability(posterior_prompt_c1, candidate1)
-        posterior_prob_c2 = llm.compute_sentence_probability(posterior_prompt_c2, candidate2)
-        
-        # Compute BCE for the candidate pair.
-        bce_value = compute_bce(prior_prob_c1, prior_prob_c2,
-                                likelihood_prob_c1, likelihood_prob_c2,
-                                posterior_prob_c1, posterior_prob_c2)
-        
+            evidence_likelihood_c1 = llm.compute_probability(
+                likelihood_prompt_c1, evidence
+            )
+            evidence_likelihood_c2 = llm.compute_probability(
+                likelihood_prompt_c2, evidence
+            )
+
+            posterior_c1 = llm.compute_probability(posterior_prompt, class1)
+            posterior_c2 = llm.compute_probability(posterior_prompt, class2)
+
+            # Compute BCE for the candidate pair.
+            bce_value = compute_bce(
+                prior_c1,
+                prior_c2,
+                evidence_likelihood_c1,
+                evidence_likelihood_c2,
+                posterior_c1,
+                posterior_c2,
+            )
         # Print results for this pair.
-        print(f"\n--- Results for Pair: {candidate1} vs. {candidate2} ---")
-        print(f"Prior probability for {candidate1}: {prior_prob_c1:.4e}")
-        print(f"Prior probability for {candidate2}: {prior_prob_c2:.4e}")
-        print(f"Likelihood for {candidate1}: {likelihood_prob_c1:.4e}")
-        print(f"Likelihood for {candidate2}: {likelihood_prob_c2:.4e}")
-        print(f"Posterior probability for {candidate1}: {posterior_prob_c1:.4e}")
-        print(f"Posterior probability for {candidate2}: {posterior_prob_c2:.4e}")
-        print(f"Bayesian Consistency Error (BCE): {bce_value:.4e}")
+            print(f"\n--- Results for Pair: {class1} vs. {class2} ---")
+            print(f"Prior probability for {class1}: {prior_c1:.4e}")
+            print(f"Prior probability for {class2}: {prior_c2:.4e}")
+            print(f"Prior ratio: {prior_c1/prior_c2:.4e}")
+            print(f"Likelihood for {class1}: {evidence_likelihood_c1:.4e}")
+            print(f"Likelihood for {class2}: {evidence_likelihood_c2:.4e}")
+            print(f"Likelihood ratio: {evidence_likelihood_c1/evidence_likelihood_c2:.4e}")
+            print(f"Posterior probability for {class1}: {posterior_c1:.4e}")
+            print(f"Posterior probability for {class2}: {posterior_c2:.4e}")
+            print(f"Posterior ratio: {posterior_c1/posterior_c2:.4e}")
+            print(f"Bayesian Consistency Error (BCE): {bce_value:.4e}")
         
         # Store the results.
-        results[(candidate1, candidate2)] = {
-            "prior_prob_c1": prior_prob_c1,
-            "prior_prob_c2": prior_prob_c2,
-            "likelihood_prob_c1": likelihood_prob_c1,
-            "likelihood_prob_c2": likelihood_prob_c2,
-            "posterior_prob_c1": posterior_prob_c1,
-            "posterior_prob_c2": posterior_prob_c2,
-            "BCE": bce_value,
-            "prompts": {
-                "prior_c1": prior_prompt_c1,
-                "prior_c2": prior_prompt_c2,
-                "likelihood_c1": likelihood_prompt_c1,
-                "likelihood_c2": likelihood_prompt_c2,
-                "posterior_c1": posterior_prompt_c1,
-                "posterior_c2": posterior_prompt_c2,
+            results[(class1, class2, evidence)] = {
+                "prior_c1": prior_c1,
+                "prior_c2": prior_c2,
+                "evidence_likelihood_c1": evidence_likelihood_c1,
+                "evidence_likelihood_c2": evidence_likelihood_c2,
+                "posterior_c1": posterior_c1,
+                "posterior_c2": posterior_c2,
+                "BCE": bce_value,
+                "prompts": {
+                    "prior_prompt": prior_prompt,
+                    "likelihood_prompt_c1": likelihood_prompt_c1,
+                    "likelihood_prompt_c2": likelihood_prompt_c2,
+                    "posterior_prompt": posterior_prompt,
+                },
             }
-        }
-        
+
     return results
 
 if __name__ == "__main__":
     # Example experimental configuration.
-    conversation_history = "We've been discussing literary styles and historical contexts in literature."
-    candidate_classes = ["Shakespeare", "Mark Twain", "Oscar Wilde", "Charles Dickens"]
-    evidence_text = "To thine own self be true."
+    conversation_history = (
+        "We've been discussing literary styles and historical contexts in literature."
+    )
+    candidate_classes = [
+        " Shakespeare.",
+        " Mark Twain.",
+        " Oscar Wilde.",
+        " Charles Dickens.",
+    ]
+    evidence_list = [
+        " works that bring out the contemporary social conventions and mores of its time rather than"
+        " focusing on poetic richness and dramatic performance."
+    ]
+    class_elicitation = " My favourite author is"
+    evidence_elicitation = " I prefer reading"
 
     # Initialize the LLM interface.
     # For testing, we use the local backend with a lightweight model (e.g., GPT-2).
     llm = LLMInterface(model_name="gpt2", backend="local")
 
     # Run the experiment across all candidate pairs.
-    experiment_results = run_full_experiment_multi(conversation_history, candidate_classes, evidence_text, llm)
-
-    # (Optional) Save or further process experiment_results.
+    experiment_results = run_full_experiment_multi(
+        conversation_history,
+        candidate_classes,
+        evidence_list,
+        class_elicitation,
+        evidence_elicitation,
+        llm,
+    )
