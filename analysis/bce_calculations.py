@@ -16,7 +16,7 @@ Functions:
 import math
 
 
-def compute_log_ratio(prob1: float, prob2: float, epsilon: float = 1e-12) -> float:
+def compute_log_ratio(prob1: float, prob2: float, epsilon: float = 1e-300) -> float:
     """
     Computes the logarithmic ratio log(prob1/prob2) in a numerically stable way.
 
