@@ -42,7 +42,7 @@ from analysis.scaling_analysis import (
     plot_power_law_fit,
     plot_bce_distribution
 )
-from experiments.experiment_runner import run_full_experiment
+from experiments.experiment_runner import run_full_experiment_multi
 from experiments.prompt_variations import get_all_variations, generate_all_prompt_variations, get_random_prompt_variation
 from utils.data_io import save_results, load_results, setup_logging
 from utils.plot import plot_histogram, plot_scatter, plot_line_chart

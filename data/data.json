@@ -15,6 +15,22 @@
 			"evidence": "that emphasizes height and light through tall windows and spires.",
 			"class_elicitation": " My favourite architectural style is",
 			"evidence_elicitation": " I prefer an architectural style"
+		},
+		{
+			"class_type": "state_of_mind",
+			"conversation_history": "We've been discussing personal mental states and how they affect work performance.",
+			"candidate_classes": ["ADHD affected","Burnout affected"],
+			"evidence": "because I constantly change my mood",
+			"class_elicitation": "I feel in a particular State of Mind",
+			"evidence_elicitation": " I experience distraction at work"
+		},
+		{
+			"class_type": "writing_style",
+			"conversation_history": "We've been discussing different writing styles and their characteristics.",
+			"candidate_classes": ["Aphasia-affected Writing","Slang-based Writing"],
+			"evidence": "grab some snacks",
+			"class_elicitation": "I feel my writing style is in a particular Writing Style",
+			"evidence_elicitation": " Boutta hit the store"
 		}
 	]
 }
