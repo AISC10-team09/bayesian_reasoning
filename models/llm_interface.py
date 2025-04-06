@@ -211,3 +211,7 @@ class LLMInterface:
             }
         else:
             return final_probability
+
+    def compute_sentence_probability(self, prompt: str, expected_response: str) -> float:
+        """Alias for compute_probability for backward compatibility."""
+        return self.compute_probability(prompt, expected_response)
