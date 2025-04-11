@@ -1,0 +1,223 @@
+2025-04-06 08:57:40,734 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-06 08:57:44,126 [INFO] Running experiment for novelists...
+2025-04-06 08:57:44,134 [INFO] Starting experiment over candidate pairs...
+2025-04-06 08:57:44,134 [INFO] Processing pair: William Shakespeare. vs. Oscar Wilde. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 08:58:17,331 [INFO] Pair William Shakespeare. vs. Oscar Wilde.: Prior Ratio = 7.1304e+00, Likelihood Ratio = 2.8486e+00, Posterior Ratio = 2.7916e+00, BCE = 1.9846e+00
+2025-04-06 08:58:17,368 [INFO] Experiment results saved to results//experiment_novelists.csv
+2025-04-06 08:58:17,368 [INFO] Completed experiment for novelists
+2025-04-06 08:58:17,368 [INFO] Running experiment for architectural_styles...
+2025-04-06 08:58:17,368 [INFO] Starting experiment over candidate pairs...
+2025-04-06 08:58:17,368 [INFO] Processing pair: Gothic. vs. Beaux Arts. with evidence: that emphasizes height and light through tall windows and spires.
+2025-04-06 08:58:26,727 [INFO] Pair Gothic. vs. Beaux Arts.: Prior Ratio = 2.6170e+05, Likelihood Ratio = 3.4036e+00, Posterior Ratio = 9.8887e+05, BCE = 1.0450e-01
+2025-04-06 08:58:26,734 [INFO] Experiment results saved to results//experiment_architectural_styles.csv
+2025-04-06 08:58:26,734 [INFO] Completed experiment for architectural_styles
+2025-04-06 08:58:26,734 [INFO] Running experiment for state_of_mind...
+2025-04-06 08:58:26,734 [INFO] Starting experiment over candidate pairs...
+2025-04-06 08:58:26,734 [INFO] Processing pair: ADHD affected. vs. Burnout affected. with evidence: because I constantly change my mood
+2025-04-06 08:58:29,595 [INFO] Pair ADHD affected. vs. Burnout affected.: Prior Ratio = 1.8479e+02, Likelihood Ratio = 1.9942e+00, Posterior Ratio = 2.0198e+01, BCE = 2.9039e+00
+2025-04-06 08:58:29,602 [INFO] Experiment results saved to results//experiment_state_of_mind.csv
+2025-04-06 08:58:29,603 [INFO] Completed experiment for state_of_mind
+2025-04-06 08:58:29,603 [INFO] Running experiment for writing_style...
+2025-04-06 08:58:29,603 [INFO] Starting experiment over candidate pairs...
+2025-04-06 08:58:29,603 [INFO] Processing pair: Aphasia-affected Writing. vs. Slang-based Writing. with evidence: grab some snacks
+2025-04-06 08:58:31,867 [INFO] Pair Aphasia-affected Writing. vs. Slang-based Writing.: Prior Ratio = 7.6437e-05, Likelihood Ratio = 3.8937e+00, Posterior Ratio = 9.9139e-05, BCE = 1.0993e+00
+2025-04-06 08:58:31,874 [INFO] Experiment results saved to results//experiment_writing_style.csv
+2025-04-06 08:58:31,874 [INFO] Completed experiment for writing_style
+2025-04-06 08:58:31,891 [INFO] === Summary of Experiments ===
+2025-04-06 08:58:31,897 [INFO] novelists: 1 pairs, Avg BCE: 1.9846
+2025-04-06 08:58:31,898 [INFO] architectural_styles: 1 pairs, Avg BCE: 0.1045
+2025-04-06 08:58:31,898 [INFO] state_of_mind: 1 pairs, Avg BCE: 2.9039
+2025-04-06 08:58:31,898 [INFO] writing_style: 1 pairs, Avg BCE: 1.0993
+2025-04-06 09:08:09,792 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-06 09:08:14,845 [INFO] Running experiment for novelists...
+2025-04-06 09:08:14,851 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:08:14,851 [INFO] Processing pair: William Shakespeare. vs. Oscar Wilde. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:09:23,525 [INFO] Pair William Shakespeare. vs. Oscar Wilde.: Prior Ratio = 7.1304e+00, Likelihood Ratio = 2.8486e+00, Posterior Ratio = 2.7916e+00, BCE = 1.9846e+00
+2025-04-06 09:09:23,537 [INFO] Processing pair: William Shakespeare. vs. Mark Twain. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:09:33,565 [INFO] Pair William Shakespeare. vs. Mark Twain.: Prior Ratio = 1.1472e+01, Likelihood Ratio = 5.5351e+00, Posterior Ratio = 7.6302e+00, BCE = 2.1189e+00
+2025-04-06 09:09:33,571 [INFO] Processing pair: Oscar Wilde. vs. Mark Twain. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:09:45,585 [INFO] Pair Oscar Wilde. vs. Mark Twain.: Prior Ratio = 1.6089e+00, Likelihood Ratio = 1.9431e+00, Posterior Ratio = 2.7333e+00, BCE = 1.3435e-01
+2025-04-06 09:09:45,740 [INFO] Experiment results saved to results//experiment_novelists.csv
+2025-04-06 09:09:45,740 [INFO] Completed experiment for novelists
+2025-04-06 09:09:45,741 [INFO] Running experiment for architectural_styles...
+2025-04-06 09:09:45,741 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:09:45,741 [INFO] Processing pair: Gothic. vs. Beaux Arts. with evidence: that emphasizes height and light through tall windows and spires.
+2025-04-06 09:10:03,727 [INFO] Pair Gothic. vs. Beaux Arts.: Prior Ratio = 2.6170e+05, Likelihood Ratio = 3.4036e+00, Posterior Ratio = 9.8887e+05, BCE = 1.0450e-01
+2025-04-06 09:10:03,808 [INFO] Experiment results saved to results//experiment_architectural_styles.csv
+2025-04-06 09:10:03,808 [INFO] Completed experiment for architectural_styles
+2025-04-06 09:10:03,809 [INFO] Running experiment for state_of_mind...
+2025-04-06 09:10:03,809 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:10:03,810 [INFO] Processing pair: ADHD affected. vs. Burnout affected. with evidence: because I constantly change my mood
+2025-04-06 09:10:09,776 [INFO] Pair ADHD affected. vs. Burnout affected.: Prior Ratio = 1.8479e+02, Likelihood Ratio = 1.9942e+00, Posterior Ratio = 2.0198e+01, BCE = 2.9039e+00
+2025-04-06 09:10:09,836 [INFO] Experiment results saved to results//experiment_state_of_mind.csv
+2025-04-06 09:10:09,837 [INFO] Completed experiment for state_of_mind
+2025-04-06 09:10:09,837 [INFO] Running experiment for writing_style...
+2025-04-06 09:10:09,839 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:10:09,839 [INFO] Processing pair: Aphasia-affected Writing. vs. Slang-based Writing. with evidence: grab some snacks
+2025-04-06 09:10:21,911 [INFO] Pair Aphasia-affected Writing. vs. Slang-based Writing.: Prior Ratio = 7.6437e-05, Likelihood Ratio = 3.8937e+00, Posterior Ratio = 9.9139e-05, BCE = 1.0993e+00
+2025-04-06 09:10:22,100 [INFO] Experiment results saved to results//experiment_writing_style.csv
+2025-04-06 09:10:22,103 [INFO] Completed experiment for writing_style
+2025-04-06 09:10:22,397 [INFO] === Summary of Experiments ===
+2025-04-06 09:10:22,451 [INFO] novelists: 3 pairs, Avg BCE: 1.4126
+2025-04-06 09:10:22,452 [INFO] architectural_styles: 1 pairs, Avg BCE: 0.1045
+2025-04-06 09:10:22,452 [INFO] state_of_mind: 1 pairs, Avg BCE: 2.9039
+2025-04-06 09:10:22,453 [INFO] writing_style: 1 pairs, Avg BCE: 1.0993
+2025-04-06 09:23:46,479 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-06 09:23:48,772 [INFO] Running experiment for novelists...
+2025-04-06 09:23:48,775 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:25:28,211 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-06 09:25:30,491 [INFO] Running experiment for novelists...
+2025-04-06 09:25:30,495 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:26:18,785 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-06 09:26:21,076 [INFO] Running experiment for novelists...
+2025-04-06 09:26:21,079 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:26:21,079 [INFO] Processing pair: William Shakespeare. vs. Oscar Wilde. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:26:56,135 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-06 09:26:58,402 [INFO] Running experiment for novelists...
+2025-04-06 09:26:58,405 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:26:58,405 [INFO] Processing pair: William Shakespeare. vs. Oscar Wilde. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:27:30,325 [INFO] Pair William Shakespeare. vs. Oscar Wilde.: Prior Ratio = 7.1304e+00, Likelihood Ratio = 2.8486e+00, Posterior Ratio = 2.7916e+00, BCE = 1.9846e+00
+2025-04-06 09:27:30,327 [INFO] Processing pair: William Shakespeare. vs. Mark Twain. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:27:33,048 [INFO] Pair William Shakespeare. vs. Mark Twain.: Prior Ratio = 1.1472e+01, Likelihood Ratio = 5.5351e+00, Posterior Ratio = 7.6302e+00, BCE = 2.1189e+00
+2025-04-06 09:27:33,048 [INFO] Processing pair: William Shakespeare. vs. Charles Dickens. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:27:35,916 [INFO] Pair William Shakespeare. vs. Charles Dickens.: Prior Ratio = 6.4100e-01, Likelihood Ratio = 1.0631e+01, Posterior Ratio = 1.0070e+00, BCE = 1.9120e+00
+2025-04-06 09:27:35,917 [INFO] Processing pair: Oscar Wilde. vs. Mark Twain. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:27:40,125 [INFO] Pair Oscar Wilde. vs. Mark Twain.: Prior Ratio = 1.6089e+00, Likelihood Ratio = 1.9431e+00, Posterior Ratio = 2.7333e+00, BCE = 1.3435e-01
+2025-04-06 09:27:40,126 [INFO] Processing pair: Oscar Wilde. vs. Charles Dickens. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:27:42,415 [INFO] Pair Oscar Wilde. vs. Charles Dickens.: Prior Ratio = 8.9896e-02, Likelihood Ratio = 3.7321e+00, Posterior Ratio = 3.6073e-01, BCE = 7.2518e-02
+2025-04-06 09:27:42,415 [INFO] Processing pair: Mark Twain. vs. Charles Dickens. with evidence: Works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-06 09:27:44,710 [INFO] Pair Mark Twain. vs. Charles Dickens.: Prior Ratio = 5.5874e-02, Likelihood Ratio = 1.9206e+00, Posterior Ratio = 1.3198e-01, BCE = 2.0687e-01
+2025-04-06 09:27:44,734 [INFO] Experiment results saved to results//experiment_novelists.csv
+2025-04-06 09:27:44,734 [INFO] Completed experiment for novelists
+2025-04-06 09:27:44,734 [INFO] Running experiment for architectural_styles...
+2025-04-06 09:27:44,734 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:27:44,734 [INFO] Processing pair: Gothic. vs. Beaux Arts. with evidence: that emphasizes height and light through tall windows and spires.
+2025-04-06 09:27:52,586 [INFO] Pair Gothic. vs. Beaux Arts.: Prior Ratio = 2.6170e+05, Likelihood Ratio = 3.4036e+00, Posterior Ratio = 9.8887e+05, BCE = 1.0450e-01
+2025-04-06 09:27:52,609 [INFO] Experiment results saved to results//experiment_architectural_styles.csv
+2025-04-06 09:27:52,609 [INFO] Completed experiment for architectural_styles
+2025-04-06 09:27:52,609 [INFO] Running experiment for state_of_mind...
+2025-04-06 09:27:52,609 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:27:52,609 [INFO] Processing pair: ADHD affected. vs. Burnout affected. with evidence: because I constantly change my mood
+2025-04-06 09:27:54,239 [INFO] Pair ADHD affected. vs. Burnout affected.: Prior Ratio = 1.8479e+02, Likelihood Ratio = 1.9942e+00, Posterior Ratio = 2.0198e+01, BCE = 2.9039e+00
+2025-04-06 09:27:54,243 [INFO] Experiment results saved to results//experiment_state_of_mind.csv
+2025-04-06 09:27:54,243 [INFO] Completed experiment for state_of_mind
+2025-04-06 09:27:54,243 [INFO] Running experiment for writing_style...
+2025-04-06 09:27:54,243 [INFO] Starting experiment over candidate pairs...
+2025-04-06 09:27:54,243 [INFO] Processing pair: Aphasia-affected Writing. vs. Slang-based Writing. with evidence: grab some snacks
+2025-04-06 09:27:55,665 [INFO] Pair Aphasia-affected Writing. vs. Slang-based Writing.: Prior Ratio = 7.6437e-05, Likelihood Ratio = 3.8937e+00, Posterior Ratio = 9.9139e-05, BCE = 1.0993e+00
+2025-04-06 09:27:55,667 [INFO] Experiment results saved to results//experiment_writing_style.csv
+2025-04-06 09:27:55,667 [INFO] Completed experiment for writing_style
+2025-04-06 09:27:55,682 [INFO] === Summary of Experiments ===
+2025-04-06 09:27:55,690 [INFO] novelists: 6 pairs, Avg BCE: 1.0715
+2025-04-06 09:27:55,691 [INFO] architectural_styles: 1 pairs, Avg BCE: 0.1045
+2025-04-06 09:27:55,691 [INFO] state_of_mind: 1 pairs, Avg BCE: 2.9039
+2025-04-06 09:27:55,691 [INFO] writing_style: 1 pairs, Avg BCE: 1.0993
+2025-04-06 09:28:46,887 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-06 09:28:49,956 [INFO] Running experiment for novelists...
+2025-04-06 09:28:49,972 [INFO] Starting experiment over candidate pairs...
+2025-04-11 16:07:32,288 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-11 16:07:35,072 [INFO] Running experiment for novelists...
+2025-04-11 16:13:08,181 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-11 16:13:11,009 [INFO] Running experiment for novelists...
+2025-04-11 16:13:11,276 [INFO] Starting experiment over candidate pairs...
+2025-04-11 16:13:11,276 [INFO] Processing pair: William Shakespeare. vs. Oscar Wilde. with evidence:  prose.
+2025-04-11 16:13:14,513 [INFO] Pair William Shakespeare. vs. Oscar Wilde.: Prior Ratio = 7.1304e+00, Likelihood Ratio = 1.0432e+00, Posterior Ratio = 9.9598e+00, BCE = 2.9190e-01
+2025-04-11 16:13:14,514 [INFO] Processing pair: William Shakespeare. vs. Oscar Wilde. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:30,382 [INFO] Pair William Shakespeare. vs. Oscar Wilde.: Prior Ratio = 7.1304e+00, Likelihood Ratio = 1.8686e+00, Posterior Ratio = 4.5384e+00, BCE = 1.0770e+00
+2025-04-11 16:13:30,383 [INFO] Processing pair: William Shakespeare. vs. Mark Twain. with evidence:  prose.
+2025-04-11 16:13:30,694 [INFO] Pair William Shakespeare. vs. Mark Twain.: Prior Ratio = 1.1472e+01, Likelihood Ratio = 7.3407e-01, Posterior Ratio = 8.1622e+00, BCE = 3.1247e-02
+2025-04-11 16:13:30,694 [INFO] Processing pair: William Shakespeare. vs. Mark Twain. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:32,217 [INFO] Pair William Shakespeare. vs. Mark Twain.: Prior Ratio = 1.1472e+01, Likelihood Ratio = 4.3510e+00, Posterior Ratio = 8.4527e+00, BCE = 1.7758e+00
+2025-04-11 16:13:32,217 [INFO] Processing pair: William Shakespeare. vs. Charles Dickens. with evidence:  prose.
+2025-04-11 16:13:32,526 [INFO] Pair William Shakespeare. vs. Charles Dickens.: Prior Ratio = 6.4100e-01, Likelihood Ratio = 1.8480e+00, Posterior Ratio = 7.0641e-01, BCE = 5.1692e-01
+2025-04-11 16:13:32,526 [INFO] Processing pair: William Shakespeare. vs. Charles Dickens. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:34,036 [INFO] Pair William Shakespeare. vs. Charles Dickens.: Prior Ratio = 6.4100e-01, Likelihood Ratio = 5.7984e+00, Posterior Ratio = 6.8802e-01, BCE = 1.6868e+00
+2025-04-11 16:13:34,036 [INFO] Processing pair: Oscar Wilde. vs. Mark Twain. with evidence:  prose.
+2025-04-11 16:13:34,346 [INFO] Pair Oscar Wilde. vs. Mark Twain.: Prior Ratio = 1.6089e+00, Likelihood Ratio = 7.0367e-01, Posterior Ratio = 8.1952e-01, BCE = 3.2315e-01
+2025-04-11 16:13:34,347 [INFO] Processing pair: Oscar Wilde. vs. Mark Twain. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:35,865 [INFO] Pair Oscar Wilde. vs. Mark Twain.: Prior Ratio = 1.6089e+00, Likelihood Ratio = 2.3285e+00, Posterior Ratio = 1.8625e+00, BCE = 6.9885e-01
+2025-04-11 16:13:35,865 [INFO] Processing pair: Oscar Wilde. vs. Charles Dickens. with evidence:  prose.
+2025-04-11 16:13:36,172 [INFO] Pair Oscar Wilde. vs. Charles Dickens.: Prior Ratio = 8.9896e-02, Likelihood Ratio = 1.7715e+00, Posterior Ratio = 7.0926e-02, BCE = 8.0882e-01
+2025-04-11 16:13:36,173 [INFO] Processing pair: Oscar Wilde. vs. Charles Dickens. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:37,677 [INFO] Pair Oscar Wilde. vs. Charles Dickens.: Prior Ratio = 8.9896e-02, Likelihood Ratio = 3.1031e+00, Posterior Ratio = 1.5160e-01, BCE = 6.0980e-01
+2025-04-11 16:13:37,678 [INFO] Processing pair: Mark Twain. vs. Charles Dickens. with evidence:  prose.
+2025-04-11 16:13:37,983 [INFO] Pair Mark Twain. vs. Charles Dickens.: Prior Ratio = 5.5874e-02, Likelihood Ratio = 2.5174e+00, Posterior Ratio = 8.6546e-02, BCE = 4.8567e-01
+2025-04-11 16:13:37,983 [INFO] Processing pair: Mark Twain. vs. Charles Dickens. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:39,568 [INFO] Pair Mark Twain. vs. Charles Dickens.: Prior Ratio = 5.5874e-02, Likelihood Ratio = 1.3327e+00, Posterior Ratio = 8.1396e-02, BCE = 8.9050e-02
+2025-04-11 16:13:39,588 [INFO] Experiment results saved to results//experiment_novelists.csv
+2025-04-11 16:13:39,588 [INFO] Completed experiment for novelists
+2025-04-11 16:13:39,588 [INFO] Running experiment for architectural_styles...
+2025-04-11 16:13:39,588 [INFO] Starting experiment over candidate pairs...
+2025-04-11 16:13:39,588 [INFO] Processing pair: Gothic. vs. Beaux Arts. with evidence: that emphasizes height and light through tall windows and spires.
+2025-04-11 16:13:43,791 [INFO] Pair Gothic. vs. Beaux Arts.: Prior Ratio = 2.6170e+05, Likelihood Ratio = 3.4036e+00, Posterior Ratio = 9.8887e+05, BCE = 1.0450e-01
+2025-04-11 16:13:43,796 [INFO] Experiment results saved to results//experiment_architectural_styles.csv
+2025-04-11 16:13:43,796 [INFO] Completed experiment for architectural_styles
+2025-04-11 16:13:43,796 [INFO] Running experiment for state_of_mind...
+2025-04-11 16:13:43,796 [INFO] Starting experiment over candidate pairs...
+2025-04-11 16:13:43,796 [INFO] Processing pair: ADHD affected. vs. Burnout affected. with evidence: because I constantly change my mood
+2025-04-11 16:13:44,630 [INFO] Pair ADHD affected. vs. Burnout affected.: Prior Ratio = 1.8479e+02, Likelihood Ratio = 1.9942e+00, Posterior Ratio = 2.0198e+01, BCE = 2.9039e+00
+2025-04-11 16:13:44,632 [INFO] Experiment results saved to results//experiment_state_of_mind.csv
+2025-04-11 16:13:44,632 [INFO] Completed experiment for state_of_mind
+2025-04-11 16:13:44,632 [INFO] Running experiment for writing_style...
+2025-04-11 16:13:44,632 [INFO] Starting experiment over candidate pairs...
+2025-04-11 16:13:44,632 [INFO] Processing pair: Aphasia-affected Writing. vs. Slang-based Writing. with evidence: grab some snacks
+2025-04-11 16:13:45,513 [INFO] Pair Aphasia-affected Writing. vs. Slang-based Writing.: Prior Ratio = 7.6437e-05, Likelihood Ratio = 3.8937e+00, Posterior Ratio = 9.9139e-05, BCE = 1.0993e+00
+2025-04-11 16:13:45,516 [INFO] Experiment results saved to results//experiment_writing_style.csv
+2025-04-11 16:13:45,516 [INFO] Completed experiment for writing_style
+2025-04-11 16:13:45,522 [INFO] === Summary of Experiments ===
+2025-04-11 16:13:45,528 [INFO] novelists: 12 pairs, Avg BCE: 0.6996
+2025-04-11 16:13:45,528 [INFO] architectural_styles: 1 pairs, Avg BCE: 0.1045
+2025-04-11 16:13:45,528 [INFO] state_of_mind: 1 pairs, Avg BCE: 2.9039
+2025-04-11 16:13:45,528 [INFO] writing_style: 1 pairs, Avg BCE: 1.0993
+2025-04-11 16:13:45,529 [INFO] Logging initialized. Log file: logs/experiments.log
+2025-04-11 16:13:47,252 [INFO] Running experiment for novelists...
+2025-04-11 16:13:47,252 [INFO] Starting experiment over candidate pairs...
+2025-04-11 16:13:47,252 [INFO] Processing pair: William Shakespeare. vs. Oscar Wilde. with evidence:  prose.
+2025-04-11 16:13:47,745 [INFO] Pair William Shakespeare. vs. Oscar Wilde.: Prior Ratio = 7.1304e+00, Likelihood Ratio = 1.0432e+00, Posterior Ratio = 9.9598e+00, BCE = 2.9190e-01
+2025-04-11 16:13:47,746 [INFO] Processing pair: William Shakespeare. vs. Oscar Wilde. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:49,350 [INFO] Pair William Shakespeare. vs. Oscar Wilde.: Prior Ratio = 7.1304e+00, Likelihood Ratio = 1.8686e+00, Posterior Ratio = 4.5384e+00, BCE = 1.0770e+00
+2025-04-11 16:13:49,351 [INFO] Processing pair: William Shakespeare. vs. Mark Twain. with evidence:  prose.
+2025-04-11 16:13:49,665 [INFO] Pair William Shakespeare. vs. Mark Twain.: Prior Ratio = 1.1472e+01, Likelihood Ratio = 7.3407e-01, Posterior Ratio = 8.1622e+00, BCE = 3.1247e-02
+2025-04-11 16:13:49,665 [INFO] Processing pair: William Shakespeare. vs. Mark Twain. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:51,952 [INFO] Pair William Shakespeare. vs. Mark Twain.: Prior Ratio = 1.1472e+01, Likelihood Ratio = 4.3510e+00, Posterior Ratio = 8.4527e+00, BCE = 1.7758e+00
+2025-04-11 16:13:51,953 [INFO] Processing pair: William Shakespeare. vs. Charles Dickens. with evidence:  prose.
+2025-04-11 16:13:52,273 [INFO] Pair William Shakespeare. vs. Charles Dickens.: Prior Ratio = 6.4100e-01, Likelihood Ratio = 1.8480e+00, Posterior Ratio = 7.0641e-01, BCE = 5.1692e-01
+2025-04-11 16:13:52,273 [INFO] Processing pair: William Shakespeare. vs. Charles Dickens. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:53,836 [INFO] Pair William Shakespeare. vs. Charles Dickens.: Prior Ratio = 6.4100e-01, Likelihood Ratio = 5.7984e+00, Posterior Ratio = 6.8802e-01, BCE = 1.6868e+00
+2025-04-11 16:13:53,836 [INFO] Processing pair: Oscar Wilde. vs. Mark Twain. with evidence:  prose.
+2025-04-11 16:13:54,145 [INFO] Pair Oscar Wilde. vs. Mark Twain.: Prior Ratio = 1.6089e+00, Likelihood Ratio = 7.0367e-01, Posterior Ratio = 8.1952e-01, BCE = 3.2315e-01
+2025-04-11 16:13:54,145 [INFO] Processing pair: Oscar Wilde. vs. Mark Twain. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:55,871 [INFO] Pair Oscar Wilde. vs. Mark Twain.: Prior Ratio = 1.6089e+00, Likelihood Ratio = 2.3285e+00, Posterior Ratio = 1.8625e+00, BCE = 6.9885e-01
+2025-04-11 16:13:55,871 [INFO] Processing pair: Oscar Wilde. vs. Charles Dickens. with evidence:  prose.
+2025-04-11 16:13:56,375 [INFO] Pair Oscar Wilde. vs. Charles Dickens.: Prior Ratio = 8.9896e-02, Likelihood Ratio = 1.7715e+00, Posterior Ratio = 7.0926e-02, BCE = 8.0882e-01
+2025-04-11 16:13:56,376 [INFO] Processing pair: Oscar Wilde. vs. Charles Dickens. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:13:59,078 [INFO] Pair Oscar Wilde. vs. Charles Dickens.: Prior Ratio = 8.9896e-02, Likelihood Ratio = 3.1031e+00, Posterior Ratio = 1.5160e-01, BCE = 6.0980e-01
+2025-04-11 16:13:59,080 [INFO] Processing pair: Mark Twain. vs. Charles Dickens. with evidence:  prose.
+2025-04-11 16:13:59,558 [INFO] Pair Mark Twain. vs. Charles Dickens.: Prior Ratio = 5.5874e-02, Likelihood Ratio = 2.5174e+00, Posterior Ratio = 8.6546e-02, BCE = 4.8567e-01
+2025-04-11 16:13:59,558 [INFO] Processing pair: Mark Twain. vs. Charles Dickens. with evidence:  works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.
+2025-04-11 16:14:02,364 [INFO] Pair Mark Twain. vs. Charles Dickens.: Prior Ratio = 5.5874e-02, Likelihood Ratio = 1.3327e+00, Posterior Ratio = 8.1396e-02, BCE = 8.9050e-02
+2025-04-11 16:14:02,401 [INFO] Experiment results saved to results//experiment_novelists.csv
+2025-04-11 16:14:02,402 [INFO] Completed experiment for novelists
+2025-04-11 16:14:02,402 [INFO] Running experiment for architectural_styles...
+2025-04-11 16:14:02,402 [INFO] Starting experiment over candidate pairs...
+2025-04-11 16:14:02,402 [INFO] Processing pair: Gothic. vs. Beaux Arts. with evidence: that emphasizes height and light through tall windows and spires.
+2025-04-11 16:14:05,053 [INFO] Pair Gothic. vs. Beaux Arts.: Prior Ratio = 2.6170e+05, Likelihood Ratio = 3.4036e+00, Posterior Ratio = 9.8887e+05, BCE = 1.0450e-01
+2025-04-11 16:14:05,100 [INFO] Experiment results saved to results//experiment_architectural_styles.csv
+2025-04-11 16:14:05,100 [INFO] Completed experiment for architectural_styles
+2025-04-11 16:14:05,100 [INFO] Running experiment for state_of_mind...
+2025-04-11 16:14:05,100 [INFO] Starting experiment over candidate pairs...
+2025-04-11 16:14:05,100 [INFO] Processing pair: ADHD affected. vs. Burnout affected. with evidence: because I constantly change my mood
+2025-04-11 16:14:08,546 [INFO] Pair ADHD affected. vs. Burnout affected.: Prior Ratio = 1.8479e+02, Likelihood Ratio = 1.9942e+00, Posterior Ratio = 2.0198e+01, BCE = 2.9039e+00
+2025-04-11 16:14:08,586 [INFO] Experiment results saved to results//experiment_state_of_mind.csv
+2025-04-11 16:14:08,587 [INFO] Completed experiment for state_of_mind
+2025-04-11 16:14:08,587 [INFO] Running experiment for writing_style...
+2025-04-11 16:14:08,587 [INFO] Starting experiment over candidate pairs...
+2025-04-11 16:14:08,587 [INFO] Processing pair: Aphasia-affected Writing. vs. Slang-based Writing. with evidence: grab some snacks
+2025-04-11 16:14:11,769 [INFO] Pair Aphasia-affected Writing. vs. Slang-based Writing.: Prior Ratio = 7.6437e-05, Likelihood Ratio = 3.8937e+00, Posterior Ratio = 9.9139e-05, BCE = 1.0993e+00
+2025-04-11 16:14:11,775 [INFO] Experiment results saved to results//experiment_writing_style.csv
+2025-04-11 16:14:11,775 [INFO] Completed experiment for writing_style
+2025-04-11 16:14:11,791 [INFO] === Summary of Experiments ===
+2025-04-11 16:14:11,801 [INFO] novelists: 12 pairs, Avg BCE: 0.6996
+2025-04-11 16:14:11,802 [INFO] architectural_styles: 1 pairs, Avg BCE: 0.1045
+2025-04-11 16:14:11,802 [INFO] state_of_mind: 1 pairs, Avg BCE: 2.9039
+2025-04-11 16:14:11,803 [INFO] writing_style: 1 pairs, Avg BCE: 1.0993

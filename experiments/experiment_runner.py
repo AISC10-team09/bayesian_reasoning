@@ -169,7 +169,7 @@ if __name__ == "__main__":
     evidence_list = [
         " works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance."
     ]
-    class_elicitation = " My favourite author is"
+    class_elicitation = " My favourite author is "
     evidence_elicitation = " I prefer reading"
 
     # Initialize the LLM interface.
