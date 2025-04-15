@@ -31,6 +31,202 @@
 			"evidence": "grab some snacks",
 			"class_elicitation": "I feel my writing style is in a particular Writing Style",
 			"evidence_elicitation": " Boutta hit the store"
-		}
+		},
+		{
+			"class_type": "culinary_techniques",
+			"conversation_history": "We've been exploring advanced cooking methods and unconventional flavor pairings beyond traditional recipes.",
+			"candidate_classes": ["Sous Vide", "Molecular Gastronomy"],
+			"class_elicitation": "My favorite cooking technique is",
+			"evidence_elicitation": "I enjoy experimenting with methods like",
+			"evidence": [
+			  {
+				"category": "culinary_expertise",
+				"evidence_text": "Precision in temperature control has revolutionized texture and flavor."
+			  },
+			  {
+				"category": "culinary_expertise",
+				"evidence_text": "Modern plating and fusion recipes highlight creative culinary expression."
+			  },
+			  {
+				"category": "tech_innovation",
+				"evidence_text": "Advancements in kitchen appliances are integrating smart technology with cooking."
+			  },
+			  {
+				"category": "tech_innovation",
+				"evidence_text": "Innovative tools enable data-driven experimentation in recipe formulation."
+			  },
+			  {
+				"category": "financial_insight",
+				"evidence_text": "Investment in culinary startups has driven competitive innovation in dining."
+			  },
+			  {
+				"category": "financial_insight",
+				"evidence_text": "Funding for experimental gastronomy is reshaping the restaurant industry."
+			  },
+			  {
+				"category": "travel_experience",
+				"evidence_text": "Culinary tours allow enthusiasts to experience global flavor trends first-hand."
+			  },
+			  {
+				"category": "travel_experience",
+				"evidence_text": "Fusion cuisine trends emerge from exposure to diverse cultural travel."
+			  },
+			  {
+				"category": "fitness_regimen",
+				"evidence_text": "Nutrient-focused meal preparations support enhanced physical performance."
+			  },
+			  {
+				"category": "fitness_regimen",
+				"evidence_text": "Balanced, innovative dishes play a role in modern active lifestyles."
+			  }
+			]
+		  },
+		  {
+			"class_type": "tech_innovators",
+			"conversation_history": "We've been discussing revolutionary figures who steer the course of technological disruption and innovation.",
+			"candidate_classes": ["Elon Musk", "Jeff Bezos"],
+			"class_elicitation": "My preferred tech innovator is",
+			"evidence_elicitation": "I admire the approach of",
+			"evidence": [
+			  {
+				"category": "culinary_expertise",
+				"evidence_text": "Innovative tech leaders often draw inspiration from creative culinary arts."
+			  },
+			  {
+				"category": "culinary_expertise",
+				"evidence_text": "Cross-disciplinary insights, including culinary trends, sometimes spark breakthrough ideas."
+			  },
+			  {
+				"category": "tech_innovation",
+				"evidence_text": "Pioneering breakthroughs in artificial intelligence drive cutting-edge technological developments."
+			  },
+			  {
+				"category": "tech_innovation",
+				"evidence_text": "Advances in renewable energy and space exploration are setting new industry benchmarks."
+			  },
+			  {
+				"category": "financial_insight",
+				"evidence_text": "Strategic funding rounds have accelerated the growth of tech startups."
+			  },
+			  {
+				"category": "financial_insight",
+				"evidence_text": "Market strategies in tech ventures often reflect robust financial planning."
+			  },
+			  {
+				"category": "travel_experience",
+				"evidence_text": "Global travel has fostered cross-cultural perspectives that inspire tech innovation."
+			  },
+			  {
+				"category": "travel_experience",
+				"evidence_text": "International collaborations often catalyze breakthrough solutions in technology."
+			  },
+			  {
+				"category": "fitness_regimen",
+				"evidence_text": "Tech-driven fitness wearables are integrating data analytics with health trends."
+			  },
+			  {
+				"category": "fitness_regimen",
+				"evidence_text": "High-tech approaches to fitness routines are promoting both health and productivity."
+			  }
+			]
+		  },
+		  {
+			"class_type": "financial_strategies",
+			"conversation_history": "We've been analyzing various investment approaches and market dynamics to optimize portfolio performance.",
+			"candidate_classes": ["Value Investing", "Growth Investing"],
+			"class_elicitation": "My investment strategy aligns with",
+			"evidence_elicitation": "I base my financial decisions on",
+			"evidence": [
+			  {
+				"category": "culinary_expertise",
+				"evidence_text": "Investments in gourmet ventures often reflect emerging market trends in dining."
+			  },
+			  {
+				"category": "culinary_expertise",
+				"evidence_text": "Fluctuations in the culinary market can signal wider economic shifts."
+			  },
+			  {
+				"category": "tech_innovation",
+				"evidence_text": "Fintech innovations are revolutionizing traditional investment strategies."
+			  },
+			  {
+				"category": "tech_innovation",
+				"evidence_text": "Data-driven algorithms now enhance real-time market analysis."
+			  },
+			  {
+				"category": "financial_insight",
+				"evidence_text": "A disciplined focus on valuation uncovers undervalued market opportunities."
+			  },
+			  {
+				"category": "financial_insight",
+				"evidence_text": "Robust portfolios rely on diversification and meticulous risk management."
+			  },
+			  {
+				"category": "travel_experience",
+				"evidence_text": "Global market cycles can be compared to diverse experiences in international travel."
+			  },
+			  {
+				"category": "travel_experience",
+				"evidence_text": "Economic trends in travel industries often mirror broader market dynamics."
+			  },
+			  {
+				"category": "fitness_regimen",
+				"evidence_text": "Investments in wellness and fitness sectors represent emerging areas of growth."
+			  },
+			  {
+				"category": "fitness_regimen",
+				"evidence_text": "The correlation between physical health and financial performance is increasingly recognized."
+			  }
+			]
+		  },
+		  {
+			"class_type": "travel_preferences",
+			"conversation_history": "We've been sharing our memorable journeys and discussing the merits of immersive, off-the-beaten-path travel experiences.",
+			"candidate_classes": ["Backpacking", "Luxury Travel"],
+			"class_elicitation": "My travel style is best described as",
+			"evidence_elicitation": "I find that traveling by",
+			"evidence": [
+			  {
+				"category": "culinary_expertise",
+				"evidence_text": "Local cuisines offer authentic insights into the culture of a destination."
+			  },
+			  {
+				"category": "culinary_expertise",
+				"evidence_text": "Culinary experiences often define the character and richness of travel."
+			  },
+			  {
+				"category": "tech_innovation",
+				"evidence_text": "Digital travel apps and smart guides are transforming travel logistics."
+			  },
+			  {
+				"category": "tech_innovation",
+				"evidence_text": "Innovative booking platforms make planning and executing trips easier than ever."
+			  },
+			  {
+				"category": "financial_insight",
+				"evidence_text": "Effective budgeting and financial strategies are essential for maximizing travel experiences."
+			  },
+			  {
+				"category": "financial_insight",
+				"evidence_text": "Innovative financing solutions enable more flexible and enriching travel options."
+			  },
+			  {
+				"category": "travel_experience",
+				"evidence_text": "Immersive cultural interactions create the most memorable travel experiences."
+			  },
+			  {
+				"category": "travel_experience",
+				"evidence_text": "Discovering off-the-beaten-path destinations often leads to unique adventures."
+			  },
+			  {
+				"category": "fitness_regimen",
+				"evidence_text": "Active travel, such as hiking and cycling, is becoming increasingly popular."
+			  },
+			  {
+				"category": "fitness_regimen",
+				"evidence_text": "Integrating fitness routines into travel enhances both health and enjoyment."
+			  }
+			]
+		  }
 	]
 }
