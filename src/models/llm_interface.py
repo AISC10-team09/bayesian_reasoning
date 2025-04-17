@@ -16,10 +16,12 @@ class LLMInterface(ABC):
 
         Args:
             model_name (str): Identifier for the model to load.
-            **kwargs: Backend-specific parameters (e.g., device, engine_config).
+            **kwargs: Backend-specific parameters (e.g., device, engine_config, verbose).
         """
         self.model_name = model_name
-        print(f"Initializing LLMInterface for model: {model_name} with params: {kwargs}")
+        # Store verbose flag, default to True if not provided
+        self.verbose = kwargs.get("verbose", False)
+        if self.verbose: print(f"Initializing LLMInterface for model: {model_name} with params: {kwargs}")
         # Store all kwargs for potential use by subclasses
         self.kwargs = kwargs
         # Example: Store common preference, subclasses can override or use kwargs directly
@@ -50,7 +52,8 @@ class LLMInterface(ABC):
     # For example, a method to explicitly release resources
     def release(self):
         """Optional method to release resources like GPU memory."""
-        print(f"Releasing resources for {self.model_name} (if applicable).")
+        if self.verbose: # Make conditional
+            print(f"Releasing resources for {self.model_name} (if applicable).")
         pass
 
     # You might retain compute_probability/sentence_probability here if you want

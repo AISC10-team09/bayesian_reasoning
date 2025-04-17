@@ -4,6 +4,7 @@ import os
 import math
 from typing import List, Dict, Any, Union, Tuple
 from itertools import product
+from tqdm import tqdm  # Add tqdm import for progress bars
 
 # Import the specific interfaces needed
 from src.models.llm_interface import LLMInterface  # Import ABC for type hinting
@@ -64,9 +65,10 @@ def collect_logprobs(
     models: List[str],
     model_params: List[Dict[str, Any]],
     model_provider: str = "hf",
-    param_mapping_strategy: str = "one_to_one",  # New parameter
+    param_mapping_strategy: str = "one_to_one",
     save_results: bool = True,
     save_path: str = DEFAULT_LOGPROBS_FILE,
+    verbose: bool = True,
 ) -> pd.DataFrame:
     """
     Compute log probabilities using the specified LLM provider interface.
@@ -90,6 +92,7 @@ def collect_logprobs(
             'combinations': Each model in `models` is run with each parameter set in `model_params`.
         save_results (bool): If True, saves the resulting DataFrame.
         save_path (str): Path to save the results CSV file.
+        verbose (bool): If True, print detailed progress and informational messages. Defaults to True.
 
     Returns:
         pd.DataFrame: DataFrame with computed log probabilities and metadata.
@@ -145,27 +148,27 @@ def collect_logprobs(
 
     # --- Determine Iteration Strategy ---
     if param_mapping_strategy == "one_to_one":
-        model_param_iterator = zip(models, model_params)
-        print("Using one-to-one model-parameter mapping.")
+        model_param_iterator = list(zip(models, model_params))
+        if verbose: print("Using one-to-one model-parameter mapping.")
     else:  # combinations
-        model_param_iterator = product(models, model_params)
-        print("Using combinations mapping: running each model with each parameter set.")
+        model_param_iterator = list(product(models, model_params))
+        if verbose: print("Using combinations mapping: running each model with each parameter set.")
 
-    # --- Sequential Processing Loop ---
-    for model_name, params in model_param_iterator:  # Use the chosen iterator
-        print(
-            f"\n--- Processing Model: {model_name} with provider: {model_provider} and params: {params} ---"
-        )
+    # --- Sequential Processing Loop with Progress Bar ---
+    iterator = tqdm(model_param_iterator, desc="Processing models", total=len(model_param_iterator))
+    for model_name, params in iterator:
+        if verbose: print(f"\n--- Processing Model: {model_name} with provider: {model_provider} and params: {params} ---")
         llm: LLMInterface = None  # Type hint using the ABC
         interface_params = params.copy()  # Use the specific params for this run
+        interface_params['verbose'] = verbose  # Add verbose to params passed to interface
 
         try:
             # --- Instantiate the correct interface based on model_provider ---
             if model_provider == "hf":
-                print(f"Using HFInterface for {model_name}")
+                if verbose: print(f"Using HFInterface for {model_name}")
                 llm = HFInterface(model_name=model_name, **interface_params)
             elif model_provider == "vllm":
-                print(f"Using VLLMInterface for {model_name}")
+                if verbose: print(f"Using VLLMInterface for {model_name}")
                 llm = VLLMInterface(model_name=model_name, **interface_params)
 
         except Exception as e:
@@ -207,7 +210,7 @@ def collect_logprobs(
                         )
             # Skip item if no valid evidence found after normalization
             if not evidence_list:
-                # print(f"Warning: No valid evidence found for item {item_index}. Skipping.") # Reduce noise
+                # if verbose: print(f"Warning: No valid evidence found for item {item_index}. Skipping.") # Optional: uncomment if needed
                 continue
 
             for clas, evidence_item in product(classes, evidence_list):
@@ -294,13 +297,11 @@ def collect_logprobs(
                 )
 
         # --- 4. Process All Prompts via LLM Interface ---
-        print(
-            f"Generated {len(prompts_to_process)} prompts for model {model_name} with params {params}. Processing via {type(llm).__name__}..."
-        )
+        if verbose: print(f"Generated {len(prompts_to_process)} prompts for model {model_name} with params {params}. Processing via {type(llm).__name__}...")
         if not prompts_to_process:
-            print("No prompts generated for this model. Skipping.")
+            if verbose: print("No prompts generated for this model. Skipping.")
             if llm:
-                llm.release()  # Release resources if model was loaded but no prompts generated
+                llm.release()
             continue
 
         try:
@@ -391,12 +392,12 @@ def collect_logprobs(
                     ):
                         torch.mps.empty_cache()
 
-        print(f"--- Finished processing Model: {model_name} with params: {params} ---")
+        if verbose: print(f"--- Finished processing Model: {model_name} with params: {params} ---")
 
     # --- 6. Create DataFrame ---
     final_results_list = list(all_results_aggregated.values())
     if not final_results_list:
-        print("No results were generated.")
+        if verbose: print("No results were generated.")
         return pd.DataFrame()
 
     df = pd.DataFrame(final_results_list)
@@ -457,33 +458,30 @@ def collect_logprobs(
 
     # --- 8. Save Results ---
     if save_results and not df.empty:
-        print(f"Saving results to {save_path}...")
+        if verbose: print(f"Saving results to {save_path}...")
         save_logprobs(df, save_path)
     elif save_results and df.empty:
-        print("DataFrame is empty. Nothing to save.")
+        if verbose: print("DataFrame is empty. Nothing to save.")
 
     return df
 
 
 if __name__ == "__main__":
     collect_logprobs(
-        "data/data.json",
+        "data/test.json",
         models=[
             "openai-community/gpt2",
             "openai-community/gpt2-medium",
-            "openai-community/gpt2-large",
-            "openai-community/gpt2-xl",
+            "meta-llama/Llama-3.2-1B",
+            # "meta-llama/Llama-3.2-3B",
         ],
         model_params=[
-            {"temperature": 0.5, "device": "mps"},
-            {"temperature": 1.0, "device": "mps"},
-            {"temperature": 2.0, "device": "mps"},
-            {"temperature": 0.5, "device": "cpu"},
-            {"temperature": 1.0, "device": "cpu"},
-            {"temperature": 2.0, "device": "cpu"},
+            {"temperature": 1.0, "device": "mps", "batch_size": 4},
+            # {"temperature": 2.0, "device": "mps", "batch_size": 4},
         ],
         model_provider="hf",
         param_mapping_strategy="combinations",
-        save_results=True,
-        save_path="data/logprobs.csv",
+        save_results=False,
+        save_path="data/test_logprobs.csv",
+        verbose=False,
     )
