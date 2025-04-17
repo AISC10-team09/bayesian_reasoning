@@ -425,6 +425,7 @@ def collect_logprobs(
         "item_index",
         "class_type",
         "class",
+        "class_elicitation",
         "evidence_category",
         "evidence_text",
         "evidence_elicitation",
