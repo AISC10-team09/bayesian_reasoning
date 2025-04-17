@@ -221,12 +221,15 @@ def collect_logprobs(
                 # Extract common fields to dedicated columns, store all params as serialized dict
                 metadata = {
                     "model_name": model_name,
-                    "model_provider": model_provider, 
+                    "model_provider": model_provider,
                     "item_index": item_index,
                     "class_type": class_type,
                     "class": clas,
                     "evidence_category": evidence_category,
                     "evidence_text": evidence_text,
+                    "conversation_history": history,
+                    "class_elicitation": class_elicitation,
+                    "evidence_elicitation": evidence_elicitation,
                     "temperature": params.get("temperature", 1.0),
                     "device": llm.device.type if hasattr(llm, "device") else params.get("device", "auto"),  # Get actual device used
                     "model_params": json.dumps(params),  # Store params as JSON
@@ -420,16 +423,18 @@ def collect_logprobs(
     # Reorder columns for clarity
     core_cols = [
         "item_index",
-        "class",
-        "evidence_text",
-        "evidence_category",
         "class_type",
+        "class",
+        "evidence_category",
+        "evidence_text",
+        "evidence_elicitation",
+        "conversation_history",
         "model_name",
         "model_provider",
         "temperature",
         "device",
         "model_params",
-        "prior_logprob",    
+        "prior_logprob",
         "likelihood_logprob",
         "posterior_logprob",
         "prior_num_tokens",
@@ -470,18 +475,16 @@ if __name__ == "__main__":
     collect_logprobs(
         "data/test.json",
         models=[
-            "openai-community/gpt2",
             "openai-community/gpt2-medium",
             "meta-llama/Llama-3.2-1B",
-            # "meta-llama/Llama-3.2-3B",
         ],
         model_params=[
             {"temperature": 1.0, "device": "mps", "batch_size": 4},
-            # {"temperature": 2.0, "device": "mps", "batch_size": 4},
+            {"temperature": 2.0, "device": "mps", "batch_size": 4},
         ],
         model_provider="hf",
         param_mapping_strategy="combinations",
-        save_results=False,
+        save_results=True,
         save_path="data/test_logprobs.csv",
         verbose=False,
     )
