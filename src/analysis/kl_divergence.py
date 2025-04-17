@@ -12,14 +12,14 @@ import math
 from typing import List
 
 
-def compute_kl_divergence(p: List[float], q: List[float], epsilon: float = 1e-12) -> float:
+def compute_kl_divergence(p: List[float], q: List[float], epsilon: float = 1e-300) -> float:
     """
     Computes the KL divergence KL(P || Q) for two discrete probability distributions.
 
     Args:
         p (List[float]): The true probability distribution P.
         q (List[float]): The approximating probability distribution Q.
-        epsilon (float, optional): A small constant to avoid division by zero. Default is 1e-12.
+        epsilon (float, optional): A small constant to avoid division by zero. Default is 1e-300.
 
     Returns:
         float: The computed KL divergence.

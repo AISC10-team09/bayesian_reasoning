@@ -1,0 +1,16 @@
+{
+	"bayesian_reasoning": [
+		{
+			"class_type": "novelists",
+			"conversation_history": "We've been discussing literary styles and historical contexts in literature.",
+			"candidate_classes": [
+				" Mark Twain.",
+				" Oscar Wilde.",
+				" Charles Dickens."
+			],
+			"evidence": " works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance.",
+			"class_elicitation": " My favourite author is",
+			"evidence_elicitation": " I prefer reading"
+		}
+	]
+}

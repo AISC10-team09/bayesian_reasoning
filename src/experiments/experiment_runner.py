@@ -26,26 +26,14 @@ import pandas as pd
 import logging
 
 from models.llm_interface import LLMInterface
-from models.prompt_templates import generate_likelihood_prompt
-from analysis.bce_calculations import compute_bce
+from src.models.prompt_templates import generate_likelihood_prompt
+from src.analysis.bce_calculations import compute_bce
 
 # Setup logging if not already configured
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
-
-def generate_prior_prompt_for_candidate(history: str, candidate: str) -> str:
-    """
-    Generate a prompt to elicit the prior probability for a specific candidate.
-    """
-    return f"{history}\nBased on our conversation, what is the probability that you are a fan of {candidate}?"
-
-def generate_posterior_prompt_for_candidate(history: str, candidate: str, evidence: str) -> str:
-    """
-    Generate a prompt to elicit the posterior probability for a specific candidate after evidence.
-    """
-    return f"{history}\nAfter hearing \"{evidence}\", what is the probability that you are a fan of {candidate}?"
 
 def run_full_experiment_multi(
     history: str,
