@@ -6,7 +6,6 @@ import math
 from dataclasses import dataclass, field
 import numpy as np
 
-
 @dataclass
 class AnalysisConfig:
     """Configuration for the LogprobAnalyzer visualization."""
@@ -330,448 +329,145 @@ class LogprobAnalyzer:
         return temp_df
 
     def _prepare_plot_data(self,
-                           metric: Callable,
-                           metric_name: str,
-                           aggregate: bool,
-                           group_by_cols: Optional[List[str]],
-                           metric_kwargs: Dict,
-                           config: AnalysisConfig # Added config for potential use
-                          ) -> tuple[Optional[pd.DataFrame], Optional[List[str]]]:
+                          metric: Optional[Callable] = None,
+                          metric_name: Optional[str] = None,
+                          aggregate: bool = False,
+                          group_by_cols: Optional[List[str]] = None,
+                          metric_kwargs: Optional[Dict] = None,
+                          config: AnalysisConfig = None
+                         ) -> tuple[Optional[pd.DataFrame], Optional[List[str]]]:
         """
-        Handles validation and metric calculation (row-wise or aggregate).
-        Returns the DataFrame ready for plotting and the grouping columns used.
-        Returns (None, None) on failure.
+        Prepares data for plotting by calculating metrics (if provided) or using existing data.
+        
+        Args:
+            metric: Optional function to calculate the metric
+            metric_name: Optional name for the metric column
+            aggregate: Whether to aggregate data
+            group_by_cols: Columns to group by when aggregating
+            metric_kwargs: Additional arguments for metric function
+            config: Visualization configuration
+            
+        Returns:
+            Tuple of (prepared DataFrame, grouping columns used)
         """
-        if self.current_df is None:
-            print("Error: Data not loaded.")
+        if self.current_df is None or self.current_df.empty:
+            print("Error: No data available.")
             return None, None
 
         df_copy = self.current_df.copy()
-        final_group_by_cols = []
-
-        # --- Validate Metric Name ---
-        if aggregate and metric_name in df_copy.columns:
-            print(f"Warning: Aggregate metric name '{metric_name}' already exists as a column. It might be overwritten if grouping matches.")
-        elif not aggregate and metric_name in df_copy.columns:
-             print(f"Warning: Row-wise metric name '{metric_name}' already exists. It will be overwritten.")
-
-
-        # --- Handle Aggregation vs. Row-wise ---
-        if aggregate:
-            # Determine grouping columns
-            group_by_cols_set = set(group_by_cols or [])
-            # Add categories used in plot config to group_by if they exist and are not already included
-            # Define relevant config attributes that imply grouping
-            grouping_relevant_attrs = [
-                'x_category', 'y_category', 'color_category', 'row_category',
-                'column_category', 'facet_category', 'layer_category',
-                'h_concat_category', 'v_concat_category', 'x_offset_category',
-                'y_offset_category', 'opacity_category', 'shape_category', 'size_category'
-            ]
-            for attr in grouping_relevant_attrs:
-                 cat = getattr(config, attr, None)
-                 if cat:
-                     # Add the base column name (without type specifier)
-                     group_by_cols_set.add(cat.split(':')[0])
-
-            final_group_by_cols = sorted(list(group_by_cols_set - {metric_name})) # Exclude metric name itself if used as category
-
-            if not final_group_by_cols:
-                print("Error: Aggregation requested but no grouping columns specified or derived from config.")
-                return None, None
-
-            missing_cols = [col for col in final_group_by_cols if col not in df_copy.columns]
-            if missing_cols:
-                print(f"Error: Grouping columns {missing_cols} not found in DataFrame.")
-                return None, None
-
-            print(f"Calculating aggregate metric '{metric_name}' using '{metric.__name__}' grouped by {final_group_by_cols}...")
-            # Use observed=True for categorical grouping, sort=False to respect existing sort order
-            grouped = df_copy.groupby(final_group_by_cols, observed=True, sort=False)
-
-            # Use apply for flexibility, passing metric_kwargs if needed
-            metric_func_to_apply = lambda group: metric(group, **metric_kwargs) if metric_kwargs else metric(group)
-
+        _metric_kwargs = metric_kwargs or {}
+        
+        # If no metric is provided, just return the current dataframe
+        if metric is None:
+            return df_copy, None
+        
+        # Handle row-wise calculation vs. aggregation
+        if not aggregate:
+            # Simple row-wise calculation
             try:
-                # Pass include_groups=False to avoid the deprecation warning and potential issues
-                agg_result = grouped.apply(metric_func_to_apply, include_groups=False)
-
-                # --- Add Explode step for list-returning metrics like pairwise MSE ---
-                # Check if the result is a Series and its elements are lists/arrays
-                if isinstance(agg_result, pd.Series) and not agg_result.empty:
-                    first_valid_element = agg_result.dropna().iloc[0] if not agg_result.dropna().empty else None
-                    if isinstance(first_valid_element, (list, np.ndarray)):
-                        print(f"Detected list output for metric '{metric_name}'. Exploding results for plotting.")
-                        agg_result = agg_result.explode().dropna()
-                        agg_result = pd.to_numeric(agg_result, errors='coerce').dropna()
-                # --- End Explode step ---
-
-            except Exception as e:
-                 print(f"Error during aggregation calculation: {e}")
-                 # import traceback
-                 # traceback.print_exc() # Uncomment for detailed traceback
-                 return None, None
-
-
-            if not isinstance(agg_result, pd.Series):
-                 print(f"Warning: Aggregation metric did not return a Pandas Series (returned {type(agg_result)}). Attempting conversion.")
-                 try:
-                     if isinstance(agg_result, pd.DataFrame) and len(agg_result.columns) == 1:
-                         agg_result = agg_result.iloc[:, 0]
-                     elif not hasattr(agg_result, 'index'):
-                          print("Aggregation returned a scalar value. Ensure this is intended.")
-                          # Attempt to reconstruct a Series - might fail for complex cases
-                          # Ensure index matches the group keys
-                          if grouped.ngroups == 1:
-                              agg_result = pd.Series([agg_result], index=grouped.groups.keys())
-                          else:
-                              # This case is ambiguous without knowing the group structure
-                              print("Error: Cannot reliably convert scalar result to Series for multiple groups.")
-                              return None, None
-                     else: # Attempt direct conversion
-                         agg_result = pd.Series(agg_result)
-
-                 except Exception as conv_e:
-                     print(f"Error: Could not convert aggregation result to Series: {conv_e}")
-                     return None, None
-
-
-            agg_result.name = metric_name
-            df_for_plot = agg_result.reset_index()
-            print(f"Aggregation complete. Plotting {len(df_for_plot)} points.")
-
-        else:
-            # Row-wise calculation
-            print(f"Calculating row-wise metric '{metric_name}' using '{metric.__name__}'...")
-            try:
-                # Apply row-wise, passing metric_kwargs if they exist
                 df_copy[metric_name] = df_copy.apply(
-                    lambda row: metric(row, **metric_kwargs) if metric_kwargs else metric(row),
-                    axis=1
+                    lambda row: metric(row, **_metric_kwargs), axis=1
                 )
-                df_for_plot = df_copy
-                print("Row-wise calculation complete.")
+                return df_copy, None
             except Exception as e:
-                 print(f"Error during row-wise calculation for '{metric_name}': {e}")
-                 # import traceback
-                 # traceback.print_exc() # Uncomment for detailed traceback
-                 return None, None
-
-
-        # --- Final Validation ---
-        required_plot_cols = set()
-        # Check columns used directly in encodings/facets etc.
-        check_attrs = [
-            'x_category', 'y_category', 'color_category', 'facet_category',
-            'row_category', 'column_category', 'opacity_category', 'size_category',
-            'shape_category', 'layer_category', 'h_concat_category', 'v_concat_category',
-            'x_offset_category', 'y_offset_category'
+                print(f"Error in row-wise calculation: {e}")
+                return None, None
+        
+        # --- Handle aggregation ---
+        # Determine grouping columns from config and explicit parameters
+        group_cols_set = set(group_by_cols or [])
+        
+        # Add columns used in visualization
+        vis_columns = [
+            config.x_category, config.y_category, config.color_category,
+            config.facet_category, config.layer_category, 
+            config.h_concat_category, config.v_concat_category,
+            config.opacity_category, config.shape_category, config.size_category,
+            config.x_offset_category, config.y_offset_category
         ]
-        for attr in check_attrs:
-             cat = getattr(config, attr, None)
-             if cat:
-                 required_plot_cols.add(cat.split(':')[0])
-
-        # The metric name itself is always required if it's not already a category
-        if metric_name not in required_plot_cols:
-             required_plot_cols.add(metric_name)
-
-
-        missing_plot_cols = [col for col in required_plot_cols if col not in df_for_plot.columns]
-        if missing_plot_cols:
-             print(f"Error: Columns required for plotting are missing from the prepared data: {missing_plot_cols}")
-             print(f"Available columns: {df_for_plot.columns.tolist()}")
-             return None, None
-
-
-        return df_for_plot, final_group_by_cols # Return group cols used
-
-    def _get_title(self, category: Optional[str], titles_dict: Optional[Dict[str, str]]) -> str:
-        """Gets a title for a category, using defaults if necessary."""
-        # Ensure titles_dict is usable, default to empty dict if None or missing
-        safe_titles_dict = titles_dict if isinstance(titles_dict, dict) else {}
-
-        if not category:
-            return "" # Return empty string if category is None or empty
-
-        # Remove type encoding like ':N', ':Q', ':O', ':T' for lookup and title generation
-        base_category = category.split(':')[0]
-
-        # Return custom title if found, otherwise format the base category name
-        return safe_titles_dict.get(base_category, base_category.replace('_', ' ').title())
-
-    def _build_encodings(self, config: AnalysisConfig, df_for_plot: pd.DataFrame, metric_name: str, aggregate: bool) -> Dict[str, Any]:
-        """Builds the Altair encoding dictionary based on the config."""
-        encoding = {}
-
-        # Map channel names to Altair encoding classes and config attributes
-        channel_map = {
-            'x': (alt.X, 'x_category'),
-            'y': (alt.Y, 'y_category'),
-            'color': (alt.Color, 'color_category'),
-            'opacity': (alt.Opacity, 'opacity_category'),
-            'size': (alt.Size, 'size_category'),
-            'shape': (alt.Shape, 'shape_category'),
-            'row': (alt.Row, 'row_category'), # Added row/column for completeness
-            'column': (alt.Column, 'column_category'),
-            'xOffset': (alt.XOffset, 'x_offset_category'),
-            'yOffset': (alt.YOffset, 'y_offset_category'),
-            # Layer is handled structurally, not as a direct encoding channel
-        }
-
-        # Helper to create encoding channel if category is defined
-        def add_encoding(channel_name: str, encoding_class: type, category_attr: str):
-            category = getattr(config, category_attr, None)
-            if category:
-                # Apply title using the specific channel class
-                encoding[channel_name] = encoding_class(category, title=self._get_title(category, config.titles))
-            # Add specific legend handling if needed (e.g., color, opacity, size, shape)
-            legend_attr = f"{channel_name}_legend"
-            legend_obj = getattr(config, legend_attr, None)
-            if category and legend_obj is not None and hasattr(encoding[channel_name], 'legend'):
-                 encoding[channel_name].legend = legend_obj
-            elif category and channel_name == 'color' and legend_obj is None and getattr(config, 'legend_config', None):
-                 # Apply general legend_config to color if no specific color_legend is set
-                 encoding[channel_name].legend = alt.Legend(**config.legend_config)
-
-        # Add encodings based on the map
-        for ch_name, (ch_class, ch_attr) in channel_map.items():
-            add_encoding(ch_name, ch_class, ch_attr)
-
-        # --- Tooltip Encoding ---
-        tooltip = []
-        tooltip_items_to_process: Optional[List[Union[str, alt.SchemaBase]]] = getattr(config, 'tooltip_fields', None)
-
-        if tooltip_items_to_process is None:
-            # Simplified Default tooltips: include essential columns + metric + count (if agg)
-            default_tooltip_cols_spec = []
-            processed_bases = set() # Track base column names to avoid duplicates
-
-            # Add core encodings if they exist
-            for attr in ['x_category', 'y_category', 'color_category', 'row_category', 'column_category', 'facet_category']:
-                cat = getattr(config, attr, None)
-                if cat:
-                    base_cat = cat.split(':')[0]
-                    if base_cat not in processed_bases:
-                        default_tooltip_cols_spec.append(cat)
-                        processed_bases.add(base_cat)
-
-            # Add the metric name itself if it's a column and not already added
-            metric_base = metric_name.split(':')[0] # Use base name for check
-            if metric_name in df_for_plot.columns and metric_base not in processed_bases:
-                # Add with type if possible, default to quantitative ':Q' if no type in name
-                metric_spec = metric_name if ':' in metric_name else f"{metric_name}:Q"
-                default_tooltip_cols_spec.append(metric_spec)
-                processed_bases.add(metric_base)
-
-            # Add count if it's an aggregated plot
-            if aggregate:
-                # Check if 'count' column exists from aggregation (unlikely with current apply)
-                # Prefer Altair's count() aggregation for tooltips
-                if 'count()' not in processed_bases:
-                    tooltip.append(alt.Tooltip("count()", title="Count")) # Use alt.Tooltip object
-
-            # Use the generated defaults (strings only for now)
-            tooltip_items_to_process = default_tooltip_cols_spec
-            # print(f"Debug: Using simplified default tooltips: {tooltip_items_to_process}") # Optional debug print
-
-        # Process the final list of tooltip items (either user-provided or default)
-        if isinstance(tooltip_items_to_process, list):
-            processed_tooltip_bases = set() # Keep track to avoid duplicate base columns in warnings/tooltips
-            for field_spec in tooltip_items_to_process:
-                field_name_to_check = None
-                field_to_add = field_spec # Default to adding the original item
-
-                try:
-                    if isinstance(field_spec, str):
-                        field_name_to_check = field_spec.split(':')[0]
-                    elif hasattr(field_spec, 'field') and isinstance(getattr(field_spec, 'field', None), str):
-                        field_name_to_check = field_spec.field.split(':')[0]
-                    elif hasattr(field_spec, 'shorthand') and isinstance(getattr(field_spec, 'shorthand', None), str):
-                         field_name_to_check = field_spec.shorthand.split(':')[0]
-                    else:
-                         print(f"Warning: Could not extract field name from tooltip item: {field_spec}. Adding it without validation.")
-
-                    if field_name_to_check:
-                        is_aggregation = field_name_to_check.endswith('()')
-                        base_field_name = field_name_to_check[:-2] if is_aggregation else field_name_to_check
-
-                        if base_field_name not in processed_tooltip_bases:
-                             processed_tooltip_bases.add(base_field_name)
-                             if not is_aggregation and base_field_name not in df_for_plot.columns:
-                                 print(f"Warning: Tooltip field '{base_field_name}' not found in DataFrame columns: {df_for_plot.columns.tolist()}")
-                             tooltip.append(field_to_add) # Add the original specifier
-
-                except Exception as e:
-                    print(f"Error processing tooltip item '{field_spec}': {e}. Skipping this item.")
-
-        if tooltip: # Only add tooltip encoding if there's something to show
-             encoding['tooltip'] = tooltip
-
-        # Apply specific color scale properties if defined
-        if 'color' in encoding:
-            if config.color_scheme:
-                encoding['color'].scale = alt.Scale(scheme=config.color_scheme)
-            if config.color_domain and config.color_range:
-                 encoding['color'].scale = alt.Scale(domain=config.color_domain, range=config.color_range)
-            elif config.color_domain:
-                 encoding['color'].scale = alt.Scale(domain=config.color_domain)
-            elif config.color_range:
-                 encoding['color'].scale = alt.Scale(range=config.color_range)
-
-        return encoding
-
-    def _build_chart_structure(self,
-                               base_chart: alt.Chart, # Takes the chart after mark and encode
-                               config: AnalysisConfig,
-                               df_for_plot: pd.DataFrame,
-                               encoding: Dict) -> alt.Chart:
-         """Applies layering, faceting, and concatenation."""
-         chart = base_chart
-         titles = config.titles or {}
-
-         # --- Layering ---
-         if config.layer_category:
-             base_layer_cat = config.layer_category.split(':')[0]
-             if base_layer_cat not in df_for_plot.columns:
-                  print(f"Warning: layer_category '{base_layer_cat}' not found. Ignoring layering.")
-             else:
-                 try:
-                     unique_layers = df_for_plot[base_layer_cat].dropna().unique()
-                     # Resolve scales independently based on what was encoded
-                     resolve_args = {
-                         scale: 'independent' for scale in ['color', 'opacity', 'size', 'shape'] if scale in encoding
-                     }
-                     chart = alt.layer(
-                         *[
-                             # Apply filter to the base chart *before* layering
-                             base_chart.transform_filter(alt.datum[base_layer_cat] == val)
-                             for val in unique_layers
-                         ]
-                     ).resolve_scale(**resolve_args)
-                 except Exception as e:
-                     print(f"Error during layering on '{base_layer_cat}': {e}")
-                     chart = base_chart # Revert to non-layered on error
-
-         # --- Faceting ---
-         facet_category = getattr(config, 'facet_category', None)
-         facet_columns = getattr(config, 'facet_columns', None) # Check for explicit columns in config
-
-         if facet_category:
-             facet_field_name = facet_category.split(':')[0]
-             if facet_field_name not in df_for_plot.columns:
-                  print(f"Warning: Facet category '{facet_field_name}' not found in data. Skipping faceting.")
-                  facet_category = None # Disable faceting
-             else:
-                 # Determine the number of columns for faceting if not specified
-                 if facet_columns is None:
-                     try:
-                         num_unique = df_for_plot[facet_field_name].nunique()
-                         # Set a reasonable default, e.g., max 3 columns or sqrt
-                         facet_columns = min(num_unique, 3) # Default to max 3 columns
-                         if facet_columns == 0:
-                             print(f"Warning: Facet category '{facet_field_name}' has 0 unique values. Skipping faceting.")
-                             facet_category = None # Disable faceting
-                         elif num_unique > 9: # Warn if potentially too many facets per row
-                             print(f"Warning: Facet category '{facet_field_name}' has {num_unique} unique values. Consider setting 'facet_columns' in AnalysisConfig for better layout.")
-                     except Exception as e:
-                          print(f"Warning: Could not determine number of columns for facet '{facet_category}'. Skipping faceting. Error: {e}")
-                          facet_category = None # Disable faceting
-
-                 # Validate facet_columns before applying
-                 if facet_category and (not isinstance(facet_columns, int) or facet_columns <= 0):
-                      print(f"Warning: Invalid number of columns ({facet_columns}) calculated or provided for faceting. Skipping faceting.")
-                      facet_category = None # Disable faceting
-
-             # Apply faceting only if category and columns are valid
-             if facet_category:
-                  print(f"Applying faceting on '{facet_category}' with {facet_columns} columns.")
-                  try:
-                      # Apply facet to the potentially layered chart
-                      chart = chart.facet(
-                          facet=alt.Facet(facet_category, title=self._get_title(facet_category, titles)),
-                          columns=facet_columns # Explicitly provide columns
-                      )
-                  except Exception as facet_e:
-                       print(f"Error applying faceting: {facet_e}. Proceeding without faceting.")
-                       # Chart remains as it was before attempting facet
-
-         # --- Concatenation ---
-         # Note: Concatenation operates on the potentially layered/faceted chart
-         charts_to_concat = [chart] # Start with the current chart state
-         resolve_y = alt.Resolve(scale={"y": "shared" if config.shared_y_scale else "independent"})
-
-         if config.h_concat_category:
-             base_hconcat_cat = config.h_concat_category.split(':')[0]
-             if base_hconcat_cat not in df_for_plot.columns:
-                  print(f"Warning: h_concat_category '{base_hconcat_cat}' not found. Ignoring hconcat.")
-             else:
-                 try:
-                     unique_hconcat = df_for_plot[base_hconcat_cat].dropna().unique()
-                     processed_charts = []
-                     for c in charts_to_concat: # Apply hconcat to each chart we have so far
-                          hconcat_list = []
-                          for val in unique_hconcat:
-                               title_str = f"{self._get_title(config.h_concat_category, titles)}: {val}" if len(unique_hconcat) > 1 else Undefined
-                               filtered_chart = c.transform_filter(
-                                    alt.datum[base_hconcat_cat] == val
-                               ).properties(title=title_str)
-                               hconcat_list.append(filtered_chart)
-                          processed_charts.append(alt.hconcat(*hconcat_list, resolve=resolve_y))
-                     charts_to_concat = processed_charts # Update the list of charts
-                 except Exception as e:
-                      print(f"Error during horizontal concatenation on '{base_hconcat_cat}': {e}")
-
-         if config.v_concat_category:
-             base_vconcat_cat = config.v_concat_category.split(':')[0]
-             if base_vconcat_cat not in df_for_plot.columns:
-                  print(f"Warning: v_concat_category '{base_vconcat_cat}' not found. Ignoring vconcat.")
-             else:
-                 try:
-                     unique_vconcat = df_for_plot[base_vconcat_cat].dropna().unique()
-                     processed_charts = []
-                     for c in charts_to_concat: # Apply vconcat potentially after hconcat
-                          vconcat_list = []
-                          for val in unique_vconcat:
-                               title_str = f"{self._get_title(config.v_concat_category, titles)}: {val}" if len(unique_vconcat) > 1 else Undefined
-                               filtered_chart = c.transform_filter(
-                                    alt.datum[base_vconcat_cat] == val
-                               ).properties(title=title_str)
-                               vconcat_list.append(filtered_chart)
-                          processed_charts.append(alt.vconcat(*vconcat_list, resolve=resolve_y))
-                     charts_to_concat = processed_charts # Update the list of charts
-                 except Exception as e:
-                      print(f"Error during vertical concatenation on '{base_vconcat_cat}': {e}")
-
-         # --- Final Chart Assembly ---
-         if len(charts_to_concat) == 1:
-             final_chart = charts_to_concat[0]
-         elif len(charts_to_concat) > 1:
-             # This case implies multiple independent charts resulted from concat steps
-             # Combine them vertically by default
-             print("Warning: Multiple independent charts resulted from concatenation steps, combining vertically.")
-             final_chart = alt.vconcat(*charts_to_concat)
-         else: # Should not happen if base_chart was valid
-             raise RuntimeError("Chart generation failed unexpectedly (no charts produced after structuring).")
-
-         return final_chart
-
+        
+        for col in vis_columns:
+            if col:
+                # Strip type specifier (e.g., ":N") if present
+                base_col = col.split(':')[0]
+                group_cols_set.add(base_col)
+        
+        # Remove metric name itself and None values
+        if metric_name:
+            group_cols_set.discard(metric_name)
+        group_cols_set.discard(None)
+        final_group_by_cols = sorted(list(group_cols_set))
+        
+        # Validate grouping columns
+        if not final_group_by_cols:
+            print("Error: No grouping columns available for aggregation.")
+            return None, None
+        
+        missing_cols = [col for col in final_group_by_cols if col not in df_copy.columns]
+        if missing_cols:
+            print(f"Error: Missing grouping columns: {missing_cols}")
+            return None, None
+        
+        # Perform aggregation
+        try:
+            grouped = df_copy.groupby(final_group_by_cols, observed=True, sort=False)
+            metric_func = lambda group: metric(group, **_metric_kwargs) if _metric_kwargs else metric(group)
+            result = grouped.apply(metric_func, include_groups=False)
+            
+            # Handle list-returning metrics (e.g., pairwise calculations)
+            if isinstance(result, pd.Series) and not result.empty:
+                first_element = result.dropna().iloc[0] if not result.dropna().empty else None
+                if isinstance(first_element, (list, np.ndarray)):
+                    result = result.explode()
+                    # Try to convert to numeric if possible
+                    result = pd.to_numeric(result, errors='coerce')
+            
+            if not isinstance(result, pd.Series):
+                print(f"Warning: Expected Series result, got {type(result)}. Attempting conversion.")
+                if hasattr(result, 'iloc') and hasattr(result, 'columns') and len(result.columns) == 1:
+                    result = result.iloc[:, 0]
+                else:
+                    result = pd.Series(result)
+            
+            result.name = metric_name
+            return result.reset_index(), final_group_by_cols
+            
+        except Exception as e:
+            print(f"Error in aggregation: {e}")
+            return None, None
 
     def visualize(self,
                   config: AnalysisConfig,
-                  metric: Callable,
-                  metric_name: str,
-                  aggregate: bool,
-                  metric_kwargs: Optional[Dict] = None, # Use kwargs for metric args
+                  metric: Optional[Callable] = None,
+                  metric_name: Optional[str] = None,
+                  aggregate: bool = False,
+                  metric_kwargs: Optional[Dict] = None,
                   group_by_cols: Optional[List[str]] = None,
-                  show_chart: bool = False # Control display
+                  show_chart: bool = False
                  ) -> alt.Chart:
         """
-        Core visualization pipeline: Calculates metric, builds chart config, generates chart.
+        Visualizes the data using Altair charts.
+        
+        Args:
+            config: Configuration for the visualization
+            metric: Optional function to calculate the metric (if None, uses existing data)
+            metric_name: Optional name for the metric column (required if metric is provided)
+            aggregate: Whether to aggregate data (only used if metric is provided)
+            metric_kwargs: Additional arguments for the metric function
+            group_by_cols: Columns to group by when aggregating
+            show_chart: Whether to display the chart
+            
+        Returns:
+            alt.Chart: The generated chart
         """
-        # Ensure metric_kwargs is a dict for internal use
+        # Ensure metric_kwargs is a dict
         _metric_kwargs = metric_kwargs or {}
-
+        
+        # Validate metric and metric_name consistency
+        if metric is not None and metric_name is None:
+            print("Warning: metric provided but metric_name is None. Using 'calculated_metric' as default name.")
+            metric_name = "calculated_metric"
+        
         try:
             # --- Data Preparation ---
             df_for_plot, _ = self._prepare_plot_data(
@@ -779,147 +475,188 @@ class LogprobAnalyzer:
                 metric_name=metric_name,
                 aggregate=aggregate,
                 group_by_cols=group_by_cols,
-                metric_kwargs=_metric_kwargs, # Pass the kwargs here
+                metric_kwargs=_metric_kwargs,
                 config=config
             )
+            
             if df_for_plot is None:
-                 print("Error: Data preparation failed. Cannot generate plot.")
-                 return alt.Chart().mark_text(text="Data Prep Error").properties(title="Error")
-
-
-            # --- Encoding ---
-            encoding = self._build_encodings(config, df_for_plot, metric_name, aggregate)
-            if not encoding:
-                 print("Error: Encoding generation failed. Cannot generate plot.")
-                 return alt.Chart().mark_text(text="Encoding Error").properties(title="Error")
-
-
-            # --- Base Chart & Mark ---
-            plot_fn = getattr(config, 'plot_fn', alt.Chart.mark_point)
-            if not callable(plot_fn):
-                 print(f"Warning: config.plot_fn is not callable. Using default mark_point.")
-                 plot_fn = alt.Chart.mark_point
-            plot_fn_kwargs = getattr(config, 'plot_fn_kwargs', {}) or {}
-
-            base_chart_obj = alt.Chart(df_for_plot) # Create base chart with data
-            # Apply mark and encode
-            marked_chart = plot_fn(base_chart_obj, **plot_fn_kwargs).encode(**encoding)
-
-
-            # --- Structuring (Layer, Facet, Concat) ---
-            # Pass the marked+encoded chart to the structuring method
-            structured_chart = self._build_chart_structure(
-                marked_chart, config, df_for_plot, encoding
-            )
-
-
-            # --- Titles and Properties ---
-            chart_title = getattr(config, 'fig_title', "Chart")
-            chart_properties = getattr(config, 'chart_properties', {}) or {} # Allow generic properties
-            final_chart = structured_chart.properties(
-                title=chart_title,
-                **chart_properties # Add any other properties like width, height
-            )
-
-            # --- Interactivity ---
-            if getattr(config, 'interactive_chart', False):
-                final_chart = final_chart.interactive()
-
-            # --- Display ---
+                return alt.Chart().mark_text(text="Data Prep Error").properties(title="Error")
+            
+            # --- Define encoding ---
+            titles = config.titles or {}
+            
+            def get_title(category: Optional[str]) -> str:
+                if not category:
+                    return ""
+                base_category = category.split(':')[0]
+                return titles.get(base_category, base_category.replace('_', ' ').title())
+            
+            # Basic encoding
+            encoding = {}
+            
+            if config.x_category:
+                encoding["x"] = alt.X(config.x_category, title=get_title(config.x_category))
+            
+            if config.y_category:
+                encoding["y"] = alt.Y(config.y_category, title=get_title(config.y_category))
+            
+            # Add color encoding if specified
+            if config.color_category:
+                color_scale = alt.Scale()
+                if config.color_scheme:
+                    color_scale = alt.Scale(scheme=config.color_scheme)
+                if config.color_domain and config.color_range:
+                    color_scale = alt.Scale(domain=config.color_domain, range=config.color_range)
+                elif config.color_domain:
+                    color_scale = alt.Scale(domain=config.color_domain)
+                elif config.color_range:
+                    color_scale = alt.Scale(range=config.color_range)
+                    
+                encoding["color"] = alt.Color(
+                    config.color_category,
+                    scale=color_scale,
+                    title=get_title(config.color_category),
+                    legend=config.color_legend or alt.Legend(**config.legend_config)
+                )
+            
+            # Add additional encodings
+            if config.opacity_category:
+                encoding["opacity"] = alt.Opacity(
+                    config.opacity_category,
+                    title=get_title(config.opacity_category),
+                    legend=config.opacity_legend
+                )
+                
+            if config.size_category:
+                encoding["size"] = alt.Size(
+                    config.size_category,
+                    title=get_title(config.size_category),
+                    legend=config.size_legend
+                )
+                
+            if config.shape_category:
+                encoding["shape"] = alt.Shape(
+                    config.shape_category,
+                    title=get_title(config.shape_category),
+                    legend=config.shape_legend
+                )
+                
+            if config.x_offset_category:
+                encoding["xOffset"] = alt.XOffset(config.x_offset_category)
+                
+            if config.y_offset_category:
+                encoding["yOffset"] = alt.YOffset(config.y_offset_category)
+            
+            # Add tooltips
+            if config.tooltip_fields:
+                encoding["tooltip"] = config.tooltip_fields
+            
+            # --- Create base chart ---
+            plot_fn = config.plot_fn or alt.Chart.mark_point
+            plot_fn_kwargs = config.plot_fn_kwargs or {}
+            chart_properties = config.chart_properties or {}
+            
+            # Create chart with data, mark, encoding
+            chart = plot_fn(alt.Chart(df_for_plot), **plot_fn_kwargs).encode(**encoding)
+            
+            # --- Handle layering ---
+            if config.layer_category:
+                base_layer_cat = config.layer_category.split(':')[0]
+                if base_layer_cat in df_for_plot.columns:
+                    chart = alt.layer(
+                        *[chart.transform_filter(f"datum.{base_layer_cat} == '{val}'")
+                          for val in df_for_plot[base_layer_cat].dropna().unique()]
+                    )
+            
+            # --- Handle faceting ---
+            if config.facet_category:
+                facet_field = config.facet_category.split(':')[0]
+                if facet_field in df_for_plot.columns:
+                    chart = chart.facet(
+                        facet=alt.Facet(config.facet_category, title=get_title(config.facet_category)),
+                        columns=config.facet_columns or 3
+                    )
+            
+            # --- Handle concatenation ---
+            if config.h_concat_category:
+                h_cat = config.h_concat_category.split(':')[0]
+                if h_cat in df_for_plot.columns:
+                    chart = alt.hconcat(
+                        *[chart.transform_filter(f"datum.{h_cat} == '{val}'")
+                          .properties(title=f"{get_title(config.h_concat_category)}: {val}")
+                          for val in df_for_plot[h_cat].dropna().unique()],
+                        resolve=alt.Resolve(scale={"y": "shared" if config.shared_y_scale else "independent"})
+                    )
+                    
+            if config.v_concat_category:
+                v_cat = config.v_concat_category.split(':')[0]
+                if v_cat in df_for_plot.columns:
+                    chart = alt.vconcat(
+                        *[chart.transform_filter(f"datum.{v_cat} == '{val}'")
+                          .properties(title=f"{get_title(config.v_concat_category)}: {val}")
+                          for val in df_for_plot[v_cat].dropna().unique()],
+                        resolve=alt.Resolve(scale={"y": "shared" if config.shared_y_scale else "independent"})
+                    )
+            
+            # --- Apply title and properties ---
+            chart = chart.properties(title=config.fig_title, **chart_properties)
+            
+            # --- Add interactivity ---
+            if config.interactive_chart:
+                chart = chart.interactive()
+            
+            # --- Display if requested ---
             if show_chart:
-                try:
-                    final_chart.show()
-                except Exception as show_e:
-                     print(f"Error displaying chart: {show_e}")
-
-
-            return final_chart
-
+                chart.show()
+                
+            return chart
+            
         except Exception as e:
-            print(f"Error during visualization pipeline: {e}")
+            print(f"Error during visualization: {e}")
             import traceback
-            traceback.print_exc() # Print detailed traceback for debugging
-            # Return a placeholder chart indicating error
+            traceback.print_exc()
             return alt.Chart(pd.DataFrame({'error': [str(e)]})).mark_text(text='error').properties(title="Visualization Error")
 
-
-# Example Usage
 if __name__ == "__main__":
-    # Import necessary calculation functions
-    from src.analysis.bce_calculations import calculate_bce_sum, calculate_variance_on_group, calculate_pairwise_mse_on_group
+    from src.analysis.bce_calculations import pairwise_mse_of_group
 
-    # 1. Load data and initialize the Analyzer
-    try:
-        # Use the provided CSV file path
-        logprob_data_path = "data/test_logprobs.csv"
-        analyzer = LogprobAnalyzer(logprob_data_path)
-        print(f"Successfully loaded data from {logprob_data_path}")
-        print("Original DataFrame head:")
-        print(analyzer.original_df.head())
-        print("\nOriginal columns:", analyzer.original_df.columns.tolist())
+    logprob_data_path = "data/test_logprobs.csv"
+    analyzer = LogprobAnalyzer(logprob_data_path)
 
-    except FileNotFoundError:
-        print(f"Error: File not found at {logprob_data_path}")
-        raise
 
     # Rename mapping for nicer labels
     analyzer.add_rename_mapping('model_name', {
         'openai-community/gpt2-medium': 'GPT-2-M',
         'meta-llama/Llama-3.2-1B': 'Llama3.2-1B'
     })
-    print("\nAdded model_name rename mapping.")
 
     # Set sort order using the *new* names
     analyzer.set_sort_order('model_name', ['GPT-2-M', 'Llama3.2-1B'])
-    print("\nSet sort order for model_name.")
-
-    # Pre-calculate BCE sum using the updated add_categorizer
-    print("\nPre-calculating BCE sum...")
-    try:
-        analyzer.add_categorizer(
-            output_columns='_bce_sum', # Explicit output name
-            source_columns=('prior_logprob', 'likelihood_logprob', 'posterior_logprob'),
-            categorizer=lambda p, l, post: p + l - post if pd.notna(p) and pd.notna(l) and pd.notna(post) else pd.NA
-        )
-        print("BCE sum calculated and added as '_bce_sum'.")
-    except Exception as e:
-         print(f"Error calculating BCE sum via categorizer: {e}")
-         # Manually add if categorizer fails (e.g., if columns missing in dummy data)
-         if '_bce_sum' not in analyzer.current_df.columns:
-              print("Attempting manual BCE sum calculation.")
-              try:
-                   analyzer.current_df['_bce_sum'] = calculate_bce_sum(analyzer.current_df)
-                   print("Manual BCE sum calculation successful.")
-              except Exception as manual_e:
-                   print(f"Manual BCE sum calculation failed: {manual_e}")
-                   analyzer.current_df['_bce_sum'] = 0.0 # Add dummy column
 
 
-    print("\nFinal Processed DataFrame head (after adding steps & BCE sum):")
-    print(analyzer.current_df.head())
-    print("\nProcessed DataFrame Info:")
-    analyzer.current_df.info()
-
-
-    # 3. Define configurations and visualize different metrics
+    analyzer.add_categorizer(
+        output_columns='_bce_sum', # Explicit output name
+        source_columns=('prior_logprob', 'likelihood_logprob', 'posterior_logprob'),
+        categorizer=lambda p, l, post: p + l - post if pd.notna(p) and pd.notna(l) and pd.
+        notna(post) else pd.NA
+    )
 
     # --- Plot 1: Variance BCE ---
-    print("\n--- Generating Plot 1: Variance BCE ---")
     config_var = AnalysisConfig(
-        plot_fn=alt.Chart.mark_bar,
-        fig_title="BCE Variance by Model and Temperature",
+        plot_fn=alt.Chart.mark_line,
+        fig_title="BCE (Variance method) by Model and Temperature",
         x_category='temperature:Q',
-        y_category='bce_variance:Q', # MUST match metric_name below
+        y_category='variance(_bce_sum):Q',
         facet_category='model_name:N',
         # facet_columns=2, # Let the code calculate default columns
-        tooltip_fields=[ # Explicit tooltips often better than default
+        tooltip_fields=[
             alt.Tooltip('model_name:N', title='Model'),
             alt.Tooltip('temperature:Q', title='Temp'),
-            alt.Tooltip('bce_variance:Q', title='BCE Variance', format=".3f"),
+            alt.Tooltip('variance(_bce_sum):Q', title='BCE', format=".3f"),
             alt.Tooltip("count():Q", title="Count", format="d"),
         ],
         titles={
-            'bce_variance': 'BCE (Variance method)',
+            'variance(_bce_sum)': 'BCE (Variance method)',
             'model_name': 'Language Model',
             'temperature': 'Temperature'
         },
@@ -927,27 +664,16 @@ if __name__ == "__main__":
         legend_config={"orient": "top"}
     )
 
-    try:
-        chart_var = analyzer.visualize(
-            config=config_var,
-            metric=calculate_variance_on_group,
-            metric_name="bce_variance",
-            aggregate=True,
-            metric_kwargs={'value_col': '_bce_sum'} # Use metric_kwargs
-        )
-        chart_var.show() # Display the chart
-        print("Variance BCE chart generated and displayed.")
-    except Exception as e:
-        print(f"Error generating Variance BCE chart: {e}")
-        if '_bce_sum' not in analyzer.current_df.columns:
-             print("Error hint: '_bce_sum' column not found. Check pre-calculation step.")
+    chart_var = analyzer.visualize(
+        config=config_var,
+    )
+    chart_var.show() # Display the chart
 
 
     # --- Plot 2: Pairwise MSE BCE ---
-    print("\n--- Generating Plot 2: Pairwise MSE BCE ---")
     config_mse = AnalysisConfig(
         plot_fn=alt.Chart.mark_boxplot,
-        fig_title="Pairwise BCE MSE by Model and Temperature",
+        fig_title="BCE (Pairwise MSE method) by Model and Temperature",
         x_category='temperature:Q',
         y_category='pairwise_bce_mse:Q',
         facet_category='model_name:N',
@@ -955,11 +681,11 @@ if __name__ == "__main__":
         tooltip_fields=[ # Using explicit tooltips
             alt.Tooltip('model_name:N', title='Model'),
             alt.Tooltip('temperature:Q', title='Temp'),
-            alt.Tooltip('pairwise_bce_mse:Q', title='Pairwise BCE MSE', format=".3f"),
-            # alt.Tooltip("count():Q", title="Count", format="d"), # Count not directly applicable to boxplot points
+            alt.Tooltip('mean(pairwise_bce_mse):Q', title='Mean BCE', format=".3f"),
+            alt.Tooltip("count():Q", title="Count", format="d"),
         ],
         titles={
-            'pairwise_bce_mse': 'Pairwise BCE MSE',
+            'pairwise_bce_mse': 'BCE (Pairwise MSE method)',
             'model_name': 'Language Model',
             'temperature': 'Temperature'
         },
@@ -967,59 +693,11 @@ if __name__ == "__main__":
         legend_config={"orient": "top"}
     )
 
-    try:
-        chart_mse = analyzer.visualize(
-            config=config_mse,
-            metric=calculate_pairwise_mse_on_group,
-            metric_name="pairwise_bce_mse",
-            aggregate=True,
-            metric_kwargs={'value_col': '_bce_sum'} # Use metric_kwargs
-        )
-        chart_mse.show() # Display the chart
-        print("Pairwise MSE BCE chart generated and displayed.")
-    except Exception as e:
-        print(f"Error generating Pairwise MSE BCE chart: {e}")
-        if '_bce_sum' not in analyzer.current_df.columns:
-             print("Error hint: '_bce_sum' column not found. Check pre-calculation step.")
-
-    # --- Plot 3: Raw BCE Sum (Row-wise, using default tooltips) ---
-    print("\n--- Generating Plot 3: Raw BCE Sum (Row-wise, default tooltips) ---")
-    config_sum_default_tt = AnalysisConfig(
-        plot_fn=alt.Chart.mark_circle,
-        plot_fn_kwargs={'opacity': 0.5},
-        fig_title="Raw BCE Sum by Model and Temperature (Default Tooltips)",
-        x_category='temperature:Q',
-        y_category='bce_sum_value:Q', # MUST match metric_name below
-        color_category='model_name:N', # Color by model
-        tooltip_fields=None, # Explicitly request default tooltips
-        titles={
-            'bce_sum_value': 'BCE Sum (Row-wise)',
-            'model_name': 'Language Model',
-            'temperature': 'Temperature'
-        },
-        interactive_chart=True # Enable interactivity
+    chart_mse = analyzer.visualize(
+        config=config_mse,
+        metric=pairwise_mse_of_group,
+        metric_name="pairwise_bce_mse",
+        aggregate=True,
+        metric_kwargs={'value_col': '_bce_sum'} # Use metric_kwargs
     )
-
-    try:
-        # Define a simple row-wise metric function for this example
-        def row_bce_sum(row):
-             # Use the pre-calculated column if available, otherwise calculate on the fly
-             if '_bce_sum' in row and pd.notna(row['_bce_sum']):
-                 return row['_bce_sum']
-             elif all(c in row for c in ['prior_logprob', 'likelihood_logprob', 'posterior_logprob']):
-                 p, l, post = row['prior_logprob'], row['likelihood_logprob'], row['posterior_logprob']
-                 return p + l - post if pd.notna(p) and pd.notna(l) and pd.notna(post) else pd.NA
-             else:
-                 return pd.NA
-
-        chart_sum_default = analyzer.visualize(
-            config=config_sum_default_tt,
-            metric=row_bce_sum, # Use the wrapper
-            metric_name="bce_sum_value", # MUST match config.y_category
-            aggregate=False,
-            # No metric_kwargs needed for this simple row function
-        )
-        chart_sum_default.show() # Display the chart
-        print("Raw BCE Sum chart with default tooltips generated and displayed.")
-    except Exception as e:
-        print(f"Error generating Raw BCE Sum chart with default tooltips: {e}")
+    chart_mse.show() # Display the chart
