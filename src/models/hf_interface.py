@@ -18,7 +18,7 @@ class HFInterface(LLMInterface):
     probability calculation on CPU, CUDA, or MPS.
     """
 
-    def __init__(self, model_name: str, **kwargs):
+    def __init__(self, model_name: str, model_kwargs: Dict[str, Any] = {}, **kwargs):
         """
         Initializes the HFInterface.
 
@@ -28,7 +28,7 @@ class HFInterface(LLMInterface):
                       'batch_size' (int, defaults to 8), 'verbose' (bool, defaults to False).
         """
         super().__init__(
-            model_name, **kwargs
+            model_name, model_kwargs=model_kwargs, **kwargs
         )  # Call ABC init, stores kwargs and verbose
 
         # --- HF-specific initialization ---
@@ -86,7 +86,7 @@ class HFInterface(LLMInterface):
                 )  # Conditional print
             # ---------------------------------
             # Consider adding dtype options (e.g., torch.bfloat16 for supported GPUs)
-            self.model = AutoModelForCausalLM.from_pretrained(model_name)
+            self.model = AutoModelForCausalLM.from_pretrained(model_name, **model_kwargs)
             self.model.eval()
             self.model.to(self.device)
             if self.verbose:

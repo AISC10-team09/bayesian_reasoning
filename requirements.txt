@@ -6,3 +6,5 @@ transformers~=4.49.0
 scipy~=1.15.2
 openai
 altair
+vegafusion
+vl-convert-python>=1.6.0

@@ -39,7 +39,8 @@ def save_logprobs(logprobs: pd.DataFrame, save_path: str = DEFAULT_LOGPROBS_FILE
 def collect_logprobs(
     dataset: Union[str, List[Dict[str, Any]]],
     models: List[str],
-    model_params: List[Dict[str, Any]],
+    model_kwargs: List[Dict[str, Any]] = {},
+    model_params: List[Dict[str, Any]] = {},
     model_provider: str = "hf",
     param_mapping_strategy: str = "one_to_one",
     save_results: bool = True,
@@ -52,6 +53,9 @@ def collect_logprobs(
     Args:
         dataset (Union[str, List[Dict[str, Any]]]): Path to JSON dataset or loaded data.
         models (List[str]): List of model identifiers.
+        model_kwargs (List[Dict[str, Any]], optional): List of model-specific keyword arguments
+            passed directly to model loading functions (e.g., trust_remote_code, use_auth_token).
+            Follows the same mapping strategy as model_params. Defaults to None (empty dict for each model).
         model_params (List[Dict[str, Any]]): List of parameter dicts for each model run.
             These parameters are passed directly to the chosen model interface
             (HFInterface or VLLMInterface) during initialization. Any parameters
@@ -84,10 +88,19 @@ def collect_logprobs(
             f"Invalid param_mapping_strategy: '{param_mapping_strategy}'. Must be 'one_to_one' or 'combinations'."
         )
 
-    if param_mapping_strategy == "one_to_one" and len(models) != len(model_params):
-        raise ValueError(
-            f"With 'one_to_one' mapping strategy, the number of models ({len(models)}) must equal the number of parameter sets ({len(model_params)})."
-        )
+    # Initialize model_kwargs if None
+    if model_kwargs is None:
+        model_kwargs = [{} for _ in range(len(models))]
+    
+    if param_mapping_strategy == "one_to_one":
+        if len(models) != len(model_params):
+            raise ValueError(
+                f"With 'one_to_one' mapping strategy, the number of models ({len(models)}) must equal the number of parameter sets ({len(model_params)})."
+            )
+        if len(models) != len(model_kwargs):
+            raise ValueError(
+                f"With 'one_to_one' mapping strategy, the number of models ({len(models)}) must equal the number of model_kwargs sets ({len(model_kwargs)})."
+            )
 
     # --- 1. Load Dataset ---
     if isinstance(dataset, str):
@@ -124,15 +137,15 @@ def collect_logprobs(
 
     # --- Determine Iteration Strategy ---
     if param_mapping_strategy == "one_to_one":
-        model_param_iterator = list(zip(models, model_params))
+        model_param_iterator = list(zip(models, model_params, model_kwargs))
         if verbose: print("Using one-to-one model-parameter mapping.")
     else:  # combinations
-        model_param_iterator = list(product(models, model_params))
+        model_param_iterator = list(product(models, model_params, model_kwargs))
         if verbose: print("Using combinations mapping: running each model with each parameter set.")
 
     # --- Sequential Processing Loop with Progress Bar ---
     iterator = tqdm(model_param_iterator, desc="Processing models", total=len(model_param_iterator))
-    for model_name, params in iterator:
+    for model_name, params, model_kw in iterator:
         if verbose: print(f"\n--- Processing Model: {model_name} with provider: {model_provider} and params: {params} ---")
         llm: LLMInterface = None  # Type hint using the ABC
         interface_params = params.copy()  # Use the specific params for this run
@@ -141,11 +154,11 @@ def collect_logprobs(
         try:
             # --- Instantiate the correct interface based on model_provider ---
             if model_provider == "hf":
-                if verbose: print(f"Using HFInterface for {model_name}")
-                llm = HFInterface(model_name=model_name, **interface_params)
+                if verbose: print(f"Using HFInterface for {model_name} with model_kwargs: {model_kw}")
+                llm = HFInterface(model_name=model_name, model_kwargs=model_kw, **interface_params)
             elif model_provider == "vllm":
-                if verbose: print(f"Using VLLMInterface for {model_name}")
-                llm = VLLMInterface(model_name=model_name, **interface_params)
+                if verbose: print(f"Using VLLMInterface for {model_name} with model_kwargs: {model_kw}")
+                llm = VLLMInterface(model_name=model_name, model_kwargs=model_kw, **interface_params)
 
         except Exception as e:
             print(
@@ -209,6 +222,7 @@ def collect_logprobs(
                     "temperature": params.get("temperature", 1.0),
                     "device": llm.device.type if hasattr(llm, "device") else params.get("device", "auto"),  # Get actual device used
                     "model_params": json.dumps(params),  # Store params as JSON
+                    "model_kwargs": json.dumps(model_kw),  # Store model_kwargs as JSON
                 }
                 # Use a hashable version of metadata for dict keys
                 metadata_key = tuple(sorted(metadata.items()))
@@ -411,6 +425,7 @@ def collect_logprobs(
         "temperature",
         "device",
         "model_params",
+        "model_kwargs",  # Add model_kwargs to core_cols for ordering
         "prior_logprob",
         "likelihood_logprob",
         "posterior_logprob",
@@ -455,12 +470,16 @@ if __name__ == "__main__":
             "openai-community/gpt2-medium",
             "meta-llama/Llama-3.2-1B",
         ],
+        model_kwargs=[
+            {"trust_remote_code": False},
+            {"trust_remote_code": True, "use_auth_token": True},
+        ],
         model_params=[
             {"temperature": 1.0, "device": "mps", "batch_size": 4},
             {"temperature": 2.0, "device": "mps", "batch_size": 4},
         ],
         model_provider="hf",
-        param_mapping_strategy="combinations",
+        param_mapping_strategy="one_to_one",
         save_results=True,
         save_path="data/test_logprobs.csv",
         verbose=False,
