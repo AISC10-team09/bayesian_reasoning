@@ -112,3 +112,77 @@ plt.show()
 
 # Print the results table
 print(result_df.sort_values('BCE'))
+
+
+# // ... existing code for loading and preprocessing data ...
+
+# Filter for only the specified models
+filtered_df = df[df['model_name'].isin(['meta-llama/Llama-3.1-8B', 'openai-community/gpt2-xl'])]
+
+# Group by model_name and class_type to calculate pairwise BCE values
+pairs_data = []
+for (model, class_type), group in filtered_df.groupby(['model_name', 'class_type']):
+    # Get all pairwise square differences
+    bce_pairs = pairwise_mse_of_group(group, 'evidence_estimate')
+    family = group['model_family'].iloc[0]
+    size = group['model_size'].iloc[0]
+    
+    # Add each individual comparison to the data
+    for bce_value in bce_pairs:
+        pairs_data.append({
+            'model_name': model,
+            'class_type': class_type,
+            'model_family': family,
+            'model_size': size,
+            'BCE': bce_value
+        })
+
+pairs_df = pd.DataFrame(pairs_data)
+
+# Calculate means for the result table
+result_df = pairs_df.groupby(['model_name', 'class_type', 'model_family', 'model_size'])['BCE'].mean().reset_index()
+
+# Create the box plot with improved styling
+plt.figure(figsize=(14, 8))
+
+# Create separate figure with subplots for each model family
+fig, axes = plt.subplots(1, len(filtered_df['model_family'].unique()), figsize=(14, 6), sharey=True)
+
+# Get unique model families
+model_families = filtered_df['model_family'].unique()
+
+# Create a plot for each model family
+for i, family in enumerate(model_families):
+    # Filter data for this family
+    family_data = pairs_df[pairs_df['model_family'] == family]
+    
+    # Create boxplot without outliers
+    sns.boxplot(x='class_type', y='BCE', data=family_data, ax=axes[i], showfliers=False)
+    
+    # Set title and format
+    axes[i].set_title(f"{family} ({family_data['model_name'].iloc[0]})")
+    axes[i].set_xlabel('')
+    
+    # Get class types and counts
+    class_counts = family_data.groupby('class_type').size()
+    class_names = class_counts.index
+    
+    # Create new labels with counts
+    new_labels = [f"{name}\n(n={class_counts[name]})" for name in class_names]
+    
+    # Rotate labels diagonally
+    axes[i].set_xticklabels(new_labels, rotation=45, ha='right')
+    
+    # Only show y-axis label on the leftmost plot
+    if i > 0:
+        axes[i].set_ylabel('')
+
+# Set common y-label
+axes[0].set_ylabel('Pairwise Bayesian Consistency Error')
+
+plt.tight_layout()
+plt.savefig('results/plots/class_type_bce_boxplot.png', dpi=300)
+plt.show()
+
+# Print the results table
+print(result_df.sort_values('BCE'))
