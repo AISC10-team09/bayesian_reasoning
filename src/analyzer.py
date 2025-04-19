@@ -618,7 +618,7 @@ class LogprobAnalyzer:
             return alt.Chart(pd.DataFrame({'error': [str(e)]})).mark_text(text='error').properties(title="Visualization Error")
 
 if __name__ == "__main__":
-    from src.analysis.bce_calculations import pairwise_mse_of_group
+    from metrics import pairwise_mse_of_group, single_evidence_estimate
 
     logprob_data_path = "data/test_logprobs.csv"
     analyzer = LogprobAnalyzer(logprob_data_path)
@@ -646,17 +646,17 @@ if __name__ == "__main__":
         plot_fn=alt.Chart.mark_line,
         fig_title="BCE (Variance method) by Model and Temperature",
         x_category='temperature:Q',
-        y_category='variance(_bce_sum):Q',
+        y_category='variance(single_evidence_estimate):Q',
         facet_category='model_name:N',
         # facet_columns=2, # Let the code calculate default columns
         tooltip_fields=[
             alt.Tooltip('model_name:N', title='Model'),
             alt.Tooltip('temperature:Q', title='Temp'),
-            alt.Tooltip('variance(_bce_sum):Q', title='BCE', format=".3f"),
+            alt.Tooltip('variance(single_evidence_estimate):Q', title='BCE', format=".3f"),
             alt.Tooltip("count():Q", title="Count", format="d"),
         ],
         titles={
-            'variance(_bce_sum)': 'BCE (Variance method)',
+            'variance(single_evidence_estimate)': 'BCE (Variance method)',
             'model_name': 'Language Model',
             'temperature': 'Temperature'
         },
@@ -666,6 +666,10 @@ if __name__ == "__main__":
 
     chart_var = analyzer.visualize(
         config=config_var,
+        metric=single_evidence_estimate,
+        metric_name="single_evidence_estimate",
+        aggregate=False,
+        metric_kwargs={'log_prior_col': 'prior_logprob', 'log_likelihood_col': 'likelihood_logprob', 'log_posterior_col': 'posterior_logprob'}
     )
     chart_var.show() # Display the chart
 

@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 # Import modules from the project.
 from models.llm_interface import LLMInterface
 from models.prompt_templates import generate_prior_prompt, generate_likelihood_prompt, generate_posterior_prompt
-from analysis.bce_calculations import compute_log_ratio, compute_bce
+from metrics import compute_log_ratio, compute_bce
 from analysis.kl_divergence import compute_kl_divergence
 from analysis.scaling_analysis import (
     compute_descriptive_stats,

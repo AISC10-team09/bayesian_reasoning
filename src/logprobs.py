@@ -17,30 +17,6 @@ import torch
 
 DEFAULT_LOGPROBS_FILE = "data/logprobs.csv"
 
-
-def load_logprobs(file_path: str = DEFAULT_LOGPROBS_FILE) -> pd.DataFrame:
-    """
-    Load log probabilities from a CSV file. Handles non-existent or empty files.
-    """
-    if os.path.exists(file_path):
-        # Check if file is empty before reading
-        if os.path.getsize(file_path) > 0:
-            try:
-                return pd.read_csv(file_path)
-            except pd.errors.EmptyDataError:
-                print(f"Warning: File {file_path} is empty. Returning empty DataFrame.")
-                return pd.DataFrame()
-            except Exception as e:
-                print(f"Error loading CSV file {file_path}: {e}")
-                return pd.DataFrame()  # Or raise e
-        else:
-            print(f"Warning: File {file_path} is empty. Returning empty DataFrame.")
-            return pd.DataFrame()
-    else:
-        print(f"File {file_path} not found. Returning empty DataFrame.")
-        return pd.DataFrame()
-
-
 def save_logprobs(logprobs: pd.DataFrame, save_path: str = DEFAULT_LOGPROBS_FILE):
     """
     Save log probabilities to a CSV file. Appends if file exists, includes header only if new/empty.

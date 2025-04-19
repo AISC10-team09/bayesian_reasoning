@@ -3,6 +3,9 @@ import numpy as np
 from itertools import combinations
 from typing import Optional
 
+def single_evidence_estimate(group: pd.DataFrame, log_prior_col: str, log_likelihood_col: str, log_posterior_col: str) -> Optional[float]:
+    return group[log_prior_col] + group[log_likelihood_col] - group[log_posterior_col]
+
 def pairwise_mse_of_group(group: pd.DataFrame, value_col: str) -> Optional[float]:
     """Calculates the pairwise squared errors for a column in a group."""
     valid_values = group[value_col].dropna()
