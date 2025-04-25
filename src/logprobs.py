@@ -39,8 +39,8 @@ def save_logprobs(logprobs: pd.DataFrame, save_path: str = DEFAULT_LOGPROBS_FILE
 def collect_logprobs(
     dataset: Union[str, List[Dict[str, Any]]],
     models: List[str],
-    model_kwargs: List[Dict[str, Any]] = {},
-    model_params: List[Dict[str, Any]] = {},
+    model_kwargs: List[Dict[str, Any]] = None,
+    model_params: List[Dict[str, Any]] = None,
     model_provider: str = "hf",
     param_mapping_strategy: str = "one_to_one",
     save_results: bool = True,
@@ -56,7 +56,7 @@ def collect_logprobs(
         model_kwargs (List[Dict[str, Any]], optional): List of model-specific keyword arguments
             passed directly to model loading functions (e.g., trust_remote_code, use_auth_token).
             Follows the same mapping strategy as model_params. Defaults to None (empty dict for each model).
-        model_params (List[Dict[str, Any]]): List of parameter dicts for each model run.
+        model_params (List[Dict[str, Any]], optional): List of parameter dicts for each model run.
             These parameters are passed directly to the chosen model interface
             (HFInterface or VLLMInterface) during initialization. Any parameters
             provided will also be included as columns in the output DataFrame.
@@ -88,9 +88,11 @@ def collect_logprobs(
             f"Invalid param_mapping_strategy: '{param_mapping_strategy}'. Must be 'one_to_one' or 'combinations'."
         )
 
-    # Initialize model_kwargs if None
+    # Initialize model_kwargs and model_params if None
     if model_kwargs is None:
         model_kwargs = [{} for _ in range(len(models))]
+    if model_params is None:
+        model_params = [{} for _ in range(len(models))]
     
     if param_mapping_strategy == "one_to_one":
         if len(models) != len(model_params):
@@ -425,7 +427,7 @@ def collect_logprobs(
         "temperature",
         "device",
         "model_params",
-        "model_kwargs",  # Add model_kwargs to core_cols for ordering
+        "model_kwargs",
         "prior_logprob",
         "likelihood_logprob",
         "posterior_logprob",
