@@ -206,6 +206,7 @@ class Analyzer:
         self,
         metric_name: str,
         metric_func: Callable,
+        metric_col: str | None = None,
         group_by_cols: list[str] | None = None, 
         inherit_identical_values: bool = False,
         **metric_kwargs
@@ -214,7 +215,12 @@ class Analyzer:
         
         Args:
             metric_name: Name for the calculated metric column
-            metric_func: Function to calculate the metric
+            metric_func: Function to calculate the metric. If group_by_cols and metric_col
+                         are provided, this function operates on the specified column Series
+                         within each group. Otherwise, it operates on the entire group DataFrame
+                         (if group_by_cols is provided) or the entire row (if group_by_cols is None).
+            metric_col: Optional column name to apply the metric_func to directly within groups.
+                        Ignored if group_by_cols is None.
             group_by_cols: Columns to group by (None for row-wise calculation)
             inherit_identical_values: If True, columns with identical values within groups are preserved
             **metric_kwargs: Additional arguments for metric function
@@ -228,7 +234,7 @@ class Analyzer:
         
         result_df = self.df.copy()
         
-        # Row-wise calculation (no grouping)
+        # Row-wise calculation (no grouping) - metric_col is ignored here
         if group_by_cols is None:
             try:
                 result_df[metric_name] = result_df.apply(
@@ -249,7 +255,17 @@ class Analyzer:
             
             # Perform grouping and apply metric function
             grouped = result_df.groupby(group_by_cols, observed=True)
-            result = grouped.apply(lambda g: metric_func(g, **metric_kwargs))
+            
+            # Apply metric function based on whether metric_col is specified
+            if metric_col:
+                if metric_col not in result_df.columns:
+                    print(f"Error: Metric column '{metric_col}' not found.")
+                    return Analyzer(pd.DataFrame())
+                # Apply function to the specified column within each group
+                result = grouped[metric_col].agg(metric_func, **metric_kwargs)
+            else:
+                # Apply function to the entire group DataFrame
+                result = grouped.apply(lambda g: metric_func(g, **metric_kwargs))
             
             # Handle list-returning metrics
             if isinstance(result.iloc[0] if not result.empty else None, (list, np.ndarray)):
