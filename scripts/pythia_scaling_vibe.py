@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import json
 import re
-from src.metrics import single_evidence_estimate, pairwise_mse_of_group
+from src.metrics import pairwise_error_of_group, single_evidence_estimate
 
 # Load the Pythia data
 df = pd.read_csv('data/pythia_logprobs.csv')
@@ -46,15 +46,15 @@ df['evidence_estimate'] = df.apply(
     axis=1
 )
 
-# Group by model_size, step, AND class_type and calculate pairwise Bayesian Consistency Errors
+# Group by model_size, step, class_type, AND evidence_text and calculate pairwise Bayesian Consistency Errors
 pairs_data = []
-for (size, step, class_type), group in df.groupby(['model_size', 'step', 'class_type']):
+for (size, step, class_type, evidence_text), group in df.groupby(['model_size', 'step', 'class_type', 'evidence_text']):
     # Skip groups with less than 2 items (can't compute pairwise differences)
     if len(group) < 2:
         continue
         
-    # Get all pairwise square differences within this class_type
-    bce_pairs = pairwise_mse_of_group(group, 'evidence_estimate')
+    # Get all pairwise square differences within this group
+    bce_pairs = pairwise_error_of_group(group, 'evidence_estimate')
     
     # Add each individual comparison to the data
     for bce_value in bce_pairs:
@@ -62,6 +62,7 @@ for (size, step, class_type), group in df.groupby(['model_size', 'step', 'class_
             'model_size': size,
             'step': step,
             'class_type': class_type,
+            'evidence_text': evidence_text,
             'BCE': bce_value
         })
 

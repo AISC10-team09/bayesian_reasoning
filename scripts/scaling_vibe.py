@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import re
-from src.metrics import single_evidence_estimate, pairwise_mse_of_group
+from src.metrics import single_evidence_estimate, pairwise_error_of_group
 from matplotlib.ticker import ScalarFormatter, FuncFormatter
 
 # Load the data
@@ -43,15 +43,15 @@ df['evidence_estimate'] = df.apply(
     axis=1
 )
 
-# Group by model_name AND class_type to calculate pairwise BCE values
+# Group by model_name, class_type, AND evidence_text to calculate pairwise BCE values
 pairs_data = []
-for (model, class_type), group in df.groupby(['model_name', 'class_type']):
+for (model, class_type, evidence), group in df.groupby(['model_name', 'class_type', 'evidence_text']):
     # Skip groups with less than 2 items (can't compute pairwise differences)
     if len(group) < 2:
         continue
         
-    # Get all pairwise square differences within this class_type
-    bce_pairs = pairwise_mse_of_group(group, 'evidence_estimate')
+    # Get all pairwise square differences within this group
+    bce_pairs = pairwise_error_of_group(group, 'evidence_estimate')
     family = group['model_family'].iloc[0]
     size = group['model_size'].iloc[0]
     
@@ -62,14 +62,19 @@ for (model, class_type), group in df.groupby(['model_name', 'class_type']):
             'model_family': family,
             'model_size': size,
             'class_type': class_type,
+            'evidence_text': evidence,
             'BCE': bce_value
         })
 
 pairs_df = pd.DataFrame(pairs_data)
 
-# Calculate means and medians for result tables
+# Calculate means and medians for result tables - now including evidence_text
 mean_df = pairs_df.groupby(['model_name', 'model_family', 'model_size'])['BCE'].mean().reset_index()
 median_df = pairs_df.groupby(['model_name', 'model_family', 'model_size'])['BCE'].median().reset_index()
+
+# Also create versions that include evidence_text
+mean_with_evidence_df = pairs_df.groupby(['model_name', 'model_family', 'model_size', 'evidence_text'])['BCE'].mean().reset_index()
+median_with_evidence_df = pairs_df.groupby(['model_name', 'model_family', 'model_size', 'evidence_text'])['BCE'].median().reset_index()
 
 # Sort by model size within each family
 pairs_df = pairs_df.sort_values(['model_family', 'model_size'])
@@ -188,15 +193,15 @@ print(median_df.sort_values(['model_family', 'model_size']))
 # You can modify this list as needed
 filtered_df = df[df['model_name'].isin(['meta-llama/Llama-3.1-8B', 'openai-community/gpt2-xl'])]
 
-# Group by model_name and class_type to calculate pairwise BCE values
+# Group by model_name, class_type, AND evidence_text to calculate pairwise BCE values
 class_pairs_data = []
-for (model, class_type), group in filtered_df.groupby(['model_name', 'class_type']):
+for (model, class_type, evidence), group in filtered_df.groupby(['model_name', 'class_type', 'evidence_text']):
     # Skip groups with less than 2 items
     if len(group) < 2:
         continue
         
     # Get all pairwise square differences
-    bce_pairs = pairwise_mse_of_group(group, 'evidence_estimate')
+    bce_pairs = pairwise_error_of_group(group, 'evidence_estimate')
     family = group['model_family'].iloc[0]
     size = group['model_size'].iloc[0]
     
@@ -205,6 +210,7 @@ for (model, class_type), group in filtered_df.groupby(['model_name', 'class_type
         class_pairs_data.append({
             'model_name': model,
             'class_type': class_type,
+            'evidence_text': evidence,
             'model_family': family,
             'model_size': size,
             'BCE': bce_value
@@ -212,8 +218,9 @@ for (model, class_type), group in filtered_df.groupby(['model_name', 'class_type
 
 class_pairs_df = pd.DataFrame(class_pairs_data)
 
-# Calculate means for the result table
+# Calculate means for the result table with evidence_text
 class_result_df = class_pairs_df.groupby(['model_name', 'class_type', 'model_family', 'model_size'])['BCE'].mean().reset_index()
+class_result_with_evidence_df = class_pairs_df.groupby(['model_name', 'class_type', 'evidence_text', 'model_family', 'model_size'])['BCE'].mean().reset_index()
 
 # Create the box plot with improved styling
 plt.figure(figsize=(14, 8))
@@ -261,7 +268,14 @@ plt.tight_layout()
 plt.savefig('results/plots/class_type_bce_boxplot.png', dpi=300)
 
 # Print the class type results table
-print("\nBCE by Model and Class Type:")
-print(class_result_df.sort_values(['model_family', 'model_size', 'BCE']))
+print("\nBCE by Model, Class Type, and Evidence Text:")
+print(class_result_with_evidence_df.sort_values(['model_family', 'model_size', 'class_type', 'evidence_text']))
+
+# Print additional tables with evidence_text included
+print("\nMean BCE by Model and Evidence Text:")
+print(mean_with_evidence_df.sort_values(['model_family', 'model_size', 'evidence_text']))
+
+print("\nMedian BCE by Model and Evidence Text:")
+print(median_with_evidence_df.sort_values(['model_family', 'model_size', 'evidence_text']))
 
 
