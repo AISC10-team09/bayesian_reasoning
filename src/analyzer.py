@@ -123,7 +123,7 @@ class Analyzer:
                     self.df[column_name] = self.df[source_col].apply(spec)
                 elif isinstance(spec, dict):
                     # Use mapping to transform values
-                    self.df[column_name] = self.df[source_col].map(spec).fillna(self.df[source_col])
+                    self.df[column_name] = self.df[source_col].map(spec)
                 else:
                     print(f"Warning: Invalid specification type for '{source_col}'. Skipping.")
         else:
@@ -285,7 +285,7 @@ class Analyzer:
                 nunique_df = grouped[cols_to_check].nunique()
                 
                 # Get columns that have only 1 unique value for all groups
-                identical_cols = [col for col in cols_to_check if (nunique_df[col] == 1).all()]
+                identical_cols = [col for col in cols_to_check if (nunique_df[col] <= 1).all()]
                 
                 if identical_cols:
                     # Get the first value for each identical column in each group
