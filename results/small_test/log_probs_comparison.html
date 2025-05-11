@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"name": "data-11fff519f91f85ab218ee43b81817419"}, "mark": {"type": "bar"}, "encoding": {"color": {"field": "class", "legend": {"columns": 3, "labelLimit": 1000, "orient": "bottom", "titleAlign": "center"}, "scale": {}, "sort": null, "title": "Class", "type": "nominal"}, "x": {"field": "component", "scale": {}, "sort": null, "title": "Component", "type": "nominal"}, "y": {"field": "value", "scale": {}, "sort": null, "title": "Value", "type": "quantitative"}}, "title": "Log Probabilities by Component and Class", "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json", "datasets": {"data-11fff519f91f85ab218ee43b81817419": [{"component": "prior", "value": -40.087303161621094, "class": " aphasia-affected writing."}, {"component": "posterior", "value": -31.50093650817871, "class": " aphasia-affected writing."}, {"component": "evidence_estimate", "value": -40.0275764465332, "class": " aphasia-affected writing."}, {"component": "likelihood", "value": -31.741361618041992, "class": " aphasia-affected writing."}, {"component": "prior", "value": -57.332706451416016, "class": " slang-based writing."}, {"component": "posterior", "value": -55.38103103637695, "class": " slang-based writing."}, {"component": "evidence_estimate", "value": -57.272979736328125, "class": " slang-based writing."}, {"component": "likelihood", "value": -55.621456146240234, "class": " slang-based writing."}]}};
+      var embedOpt = {"mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>

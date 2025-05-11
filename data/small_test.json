@@ -1,0 +1,17 @@
+{
+  "bayesian_reasoning": [
+    {
+      "class_type": "writing_style",
+      "conversation_history": "We've been discussing different writing styles and their characteristics.",
+      "candidate_classes": [" aphasia-affected writing.", " slang-based writing."],
+      "class_elicitation": " I feel my writing style is in a particular writing style",
+      "evidence_elicitation": " Boutta hit the store",
+      "evidence": [
+        {
+          "category": "linguistic_pattern",
+          "evidence_text": " finna get that new drop before it sells out."
+        }
+      ]
+    }
+  ]
+}

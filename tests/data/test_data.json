@@ -1,0 +1,34 @@
+{
+  "bayesian_reasoning": [
+    {
+      "class_type": "writing_style",
+      "conversation_history": "We've been discussing different writing styles and their characteristics.",
+      "candidate_classes": [" aphasia-affected writing.", " slang-based writing."],
+      "class_elicitation": " I feel my writing style is in a particular writing style",
+      "evidence_elicitation": " Boutta hit the store",
+      "evidence": [
+        {
+          "category": "linguistic_pattern",
+          "evidence_text": " finna get that new drop before it sells out."
+        },
+        {
+          "category": "communication_style",
+          "evidence_text": " using abbreviated forms and colloquialisms instead of formal language."
+        }
+      ]
+    },
+    {
+      "class_type": "architectural_styles",
+      "conversation_history": "We've been discussing European architectural styles.",
+      "candidate_classes": [" gothic.", " beaux arts."],
+      "class_elicitation": " My favourite architectural style is",
+      "evidence_elicitation": " I prefer an architectural style",
+      "evidence": [
+        {
+          "category": "design_principle",
+          "evidence_text": " that reaches skyward."
+        }
+      ]
+    }
+  ]
+}

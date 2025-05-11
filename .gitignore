@@ -8,3 +8,5 @@ __pycache__/
 .env.test.local
 env/
 *.egg-info/
+src/.egg-info/
+notes/

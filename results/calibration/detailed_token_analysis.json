@@ -1,0 +1,242 @@
+{
+  "(('class', ' aphasia-affected writing.'), ('class_elicitation', ' I feel my writing style is in a particular writing style'), ('class_type', 'writing_style'), ('conversation_history', \"We've been discussing different writing styles and their characteristics.\"), ('device', 'mps'), ('evidence_category', 'linguistic_pattern'), ('evidence_elicitation', ' Boutta hit the store'), ('evidence_text', ' finna get that new drop before it sells out.'), ('item_index', 0), ('model_kwargs', '{}'), ('model_name', 'gpt2'), ('model_params', '{}'), ('model_provider', 'hf'), ('temperature', 1.0), ('prompt_type', 'prior'))": {
+    "prompt_type": "prior",
+    "completion": " aphasia-affected writing.",
+    "total_logprob": -40.087303161621094,
+    "num_tokens": 7,
+    "token_logprobs": [
+      -8.213906288146973,
+      -9.508413314819336,
+      -0.2627987861633301,
+      -5.296767234802246,
+      -8.15778923034668,
+      -3.5881412029266357,
+      -5.059488296508789
+    ],
+    "token_texts": [
+      "\u0120a",
+      "phas",
+      "ia",
+      "-",
+      "affected",
+      "\u0120writing",
+      "."
+    ],
+    "token_ids": [
+      257,
+      5902,
+      544,
+      12,
+      43958,
+      3597,
+      13
+    ],
+    "metadata": {
+      "class": " aphasia-affected writing.",
+      "class_type": "writing_style",
+      "evidence_text": " finna get that new drop before it sells out."
+    }
+  },
+  "(('class', ' aphasia-affected writing.'), ('class_elicitation', ' I feel my writing style is in a particular writing style'), ('class_type', 'writing_style'), ('conversation_history', \"We've been discussing different writing styles and their characteristics.\"), ('device', 'mps'), ('evidence_category', 'linguistic_pattern'), ('evidence_elicitation', ' Boutta hit the store'), ('evidence_text', ' finna get that new drop before it sells out.'), ('item_index', 0), ('model_kwargs', '{}'), ('model_name', 'gpt2'), ('model_params', '{}'), ('model_provider', 'hf'), ('temperature', 1.0), ('prompt_type', 'likelihood'))": {
+    "prompt_type": "likelihood",
+    "completion": " finna get that new drop before it sells out.",
+    "total_logprob": -57.272979736328125,
+    "num_tokens": 11,
+    "token_logprobs": [
+      -16.180484771728516,
+      -2.753401041030884,
+      -4.864641189575195,
+      -4.4465484619140625,
+      -5.557035446166992,
+      -8.931480407714844,
+      -6.4650492668151855,
+      -2.3858556747436523,
+      -4.488983154296875,
+      -0.5276981592178345,
+      -0.6718012690544128
+    ],
+    "token_texts": [
+      "\u0120fin",
+      "na",
+      "\u0120get",
+      "\u0120that",
+      "\u0120new",
+      "\u0120drop",
+      "\u0120before",
+      "\u0120it",
+      "\u0120sells",
+      "\u0120out",
+      "."
+    ],
+    "token_ids": [
+      957,
+      2616,
+      651,
+      326,
+      649,
+      4268,
+      878,
+      340,
+      16015,
+      503,
+      13
+    ],
+    "metadata": {
+      "class": " aphasia-affected writing.",
+      "class_type": "writing_style",
+      "evidence_text": " finna get that new drop before it sells out."
+    }
+  },
+  "(('class', ' aphasia-affected writing.'), ('class_elicitation', ' I feel my writing style is in a particular writing style'), ('class_type', 'writing_style'), ('conversation_history', \"We've been discussing different writing styles and their characteristics.\"), ('device', 'mps'), ('evidence_category', 'linguistic_pattern'), ('evidence_elicitation', ' Boutta hit the store'), ('evidence_text', ' finna get that new drop before it sells out.'), ('item_index', 0), ('model_kwargs', '{}'), ('model_name', 'gpt2'), ('model_params', '{}'), ('model_provider', 'hf'), ('temperature', 1.0), ('prompt_type', 'posterior'))": {
+    "prompt_type": "posterior",
+    "completion": " aphasia-affected writing.",
+    "total_logprob": -40.0275764465332,
+    "num_tokens": 7,
+    "token_logprobs": [
+      -7.7204790115356445,
+      -9.965680122375488,
+      -0.23038549721240997,
+      -5.357667922973633,
+      -8.264585494995117,
+      -3.854546546936035,
+      -4.6342315673828125
+    ],
+    "token_texts": [
+      "\u0120a",
+      "phas",
+      "ia",
+      "-",
+      "affected",
+      "\u0120writing",
+      "."
+    ],
+    "token_ids": [
+      257,
+      5902,
+      544,
+      12,
+      43958,
+      3597,
+      13
+    ],
+    "metadata": {
+      "class": " aphasia-affected writing.",
+      "class_type": "writing_style",
+      "evidence_text": " finna get that new drop before it sells out."
+    }
+  },
+  "(('class', ' slang-based writing.'), ('class_elicitation', ' I feel my writing style is in a particular writing style'), ('class_type', 'writing_style'), ('conversation_history', \"We've been discussing different writing styles and their characteristics.\"), ('device', 'mps'), ('evidence_category', 'linguistic_pattern'), ('evidence_elicitation', ' Boutta hit the store'), ('evidence_text', ' finna get that new drop before it sells out.'), ('item_index', 0), ('model_kwargs', '{}'), ('model_name', 'gpt2'), ('model_params', '{}'), ('model_provider', 'hf'), ('temperature', 1.0), ('prompt_type', 'prior'))": {
+    "prompt_type": "prior",
+    "completion": " slang-based writing.",
+    "total_logprob": -31.50093650817871,
+    "num_tokens": 5,
+    "token_logprobs": [
+      -14.816544532775879,
+      -3.8252224922180176,
+      -4.017056941986084,
+      -4.371981620788574,
+      -4.470130920410156
+    ],
+    "token_texts": [
+      "\u0120slang",
+      "-",
+      "based",
+      "\u0120writing",
+      "."
+    ],
+    "token_ids": [
+      39306,
+      12,
+      3106,
+      3597,
+      13
+    ],
+    "metadata": {
+      "class": " slang-based writing.",
+      "class_type": "writing_style",
+      "evidence_text": " finna get that new drop before it sells out."
+    }
+  },
+  "(('class', ' slang-based writing.'), ('class_elicitation', ' I feel my writing style is in a particular writing style'), ('class_type', 'writing_style'), ('conversation_history', \"We've been discussing different writing styles and their characteristics.\"), ('device', 'mps'), ('evidence_category', 'linguistic_pattern'), ('evidence_elicitation', ' Boutta hit the store'), ('evidence_text', ' finna get that new drop before it sells out.'), ('item_index', 0), ('model_kwargs', '{}'), ('model_name', 'gpt2'), ('model_params', '{}'), ('model_provider', 'hf'), ('temperature', 1.0), ('prompt_type', 'likelihood'))": {
+    "prompt_type": "likelihood",
+    "completion": " finna get that new drop before it sells out.",
+    "total_logprob": -55.621456146240234,
+    "num_tokens": 11,
+    "token_logprobs": [
+      -16.441877365112305,
+      -1.9955377578735352,
+      -4.253897190093994,
+      -4.205482482910156,
+      -5.386162281036377,
+      -8.758129119873047,
+      -6.673346519470215,
+      -2.398818016052246,
+      -4.283210277557373,
+      -0.5589441657066345,
+      -0.666049599647522
+    ],
+    "token_texts": [
+      "\u0120fin",
+      "na",
+      "\u0120get",
+      "\u0120that",
+      "\u0120new",
+      "\u0120drop",
+      "\u0120before",
+      "\u0120it",
+      "\u0120sells",
+      "\u0120out",
+      "."
+    ],
+    "token_ids": [
+      957,
+      2616,
+      651,
+      326,
+      649,
+      4268,
+      878,
+      340,
+      16015,
+      503,
+      13
+    ],
+    "metadata": {
+      "class": " slang-based writing.",
+      "class_type": "writing_style",
+      "evidence_text": " finna get that new drop before it sells out."
+    }
+  },
+  "(('class', ' slang-based writing.'), ('class_elicitation', ' I feel my writing style is in a particular writing style'), ('class_type', 'writing_style'), ('conversation_history', \"We've been discussing different writing styles and their characteristics.\"), ('device', 'mps'), ('evidence_category', 'linguistic_pattern'), ('evidence_elicitation', ' Boutta hit the store'), ('evidence_text', ' finna get that new drop before it sells out.'), ('item_index', 0), ('model_kwargs', '{}'), ('model_name', 'gpt2'), ('model_params', '{}'), ('model_provider', 'hf'), ('temperature', 1.0), ('prompt_type', 'posterior'))": {
+    "prompt_type": "posterior",
+    "completion": " slang-based writing.",
+    "total_logprob": -31.741361618041992,
+    "num_tokens": 5,
+    "token_logprobs": [
+      -14.303776741027832,
+      -4.153329372406006,
+      -4.581697463989258,
+      -4.384886741638184,
+      -4.317672252655029
+    ],
+    "token_texts": [
+      "\u0120slang",
+      "-",
+      "based",
+      "\u0120writing",
+      "."
+    ],
+    "token_ids": [
+      39306,
+      12,
+      3106,
+      3597,
+      13
+    ],
+    "metadata": {
+      "class": " slang-based writing.",
+      "class_type": "writing_style",
+      "evidence_text": " finna get that new drop before it sells out."
+    }
+  }
+}
