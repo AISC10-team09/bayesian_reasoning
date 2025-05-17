@@ -1,364 +1,1148 @@
 {
-	"bayesian_reasoning": [
-		{
-			"class_type": "novelists",
-			"conversation_history": "We've been discussing literary styles and historical contexts in literature.",
-			"candidate_classes": [" William Shakespeare.", " Oscar Wilde.", " Jane Austen.", " Charles Dickens.", " Virginia Woolf."],
-			"class_elicitation": " My favourite author is",
-			"evidence_elicitation": " I prefer reading",
-			"evidence": [
-				{
-					"category": "literary_analysis",
-					"evidence_text": " works that bring out the contemporary social conventions and mores of its time rather than focusing on poetic richness and dramatic performance."
-				},
-				{
-					"category": "literary_analysis",
-					"evidence_text": " character-driven narratives."
-				},
-				{
-					"category": "historical_context",
-					"evidence_text": " literature from periods of significant social transition that captures changing values, particularly those written during times when society was undergoing fundamental shifts in perspective about class, gender roles, and interpersonal relationships."
-				},
-				{
-					"category": "historical_context",
-					"evidence_text": " social observers."
-				},
-				{
-					"category": "cultural_impact",
-					"evidence_text": " books that challenged conventional thinking and introduced progressive social ideas."
-				},
-				{
-					"category": "cultural_impact",
-					"evidence_text": " enduring classics that remain relevant centuries later, particularly those that have been adapted across multiple media formats and continue to shape our understanding of narrative structure and character development in ways that transcend their original historical context."
-				},
-				{
-					"category": "stylistic_technique",
-					"evidence_text": " subtle irony."
-				},
-				{
-					"category": "stylistic_technique",
-					"evidence_text": " prose that employs wit and carefully structured dialogue to develop character."
-				}
-			]
-		},
-		{
-			"class_type": "architectural_styles",
-			"conversation_history": "We've been discussing European architectural styles.",
-			"candidate_classes": [" gothic.", " beaux arts.", " baroque.", " modernism.", " art deco."],
-			"class_elicitation": " My favourite architectural style is",
-			"evidence_elicitation": " I prefer an architectural style",
-			"evidence": [
-				{
-					"category": "design_principle",
-					"evidence_text": " that reaches skyward."
-				},
-				{
-					"category": "design_principle",
-					"evidence_text": " with dramatic verticality and pointed arches that create a sense of transcendence."
-				},
-				{
-					"category": "historical_context",
-					"evidence_text": " developed during periods of religious expression and symbolism in building, when faith communities invested enormous resources into creating spaces that would inspire spiritual reverence and communicate theological concepts through architectural features."
-				},
-				{
-					"category": "historical_context",
-					"evidence_text": " that emerged from medieval construction techniques and evolving structural capabilities."
-				},
-				{
-					"category": "cultural_impact",
-					"evidence_text": " awe-inspiring."
-				},
-				{
-					"category": "cultural_impact",
-					"evidence_text": " whose distinctive silhouettes define the skylines of historic European cities."
-				},
-				{
-					"category": "technical_innovation",
-					"evidence_text": " featuring flying buttresses and ribbed vaults that solved weight distribution problems."
-				},
-				{
-					"category": "technical_innovation",
-					"evidence_text": " with luminous interiors."
-				}
-			]
-		},
-		{
-			"class_type": "state_of_mind",
-			"conversation_history": "We've been discussing personal mental states and how they affect work performance.",
-			"candidate_classes": [" adhd affected.", " burnout affected."],
-			"class_elicitation": " I feel in a particular state of mind",
-			"evidence_elicitation": " I experience distraction at work",
-			"evidence": [
-				{
-					"category": "behavioral_pattern",
-					"evidence_text": " from mood fluctuations."
-				},
-				{
-					"category": "behavioral_pattern",
-					"evidence_text": " shifting focus between multiple tasks without completing any of them, often starting projects with enthusiasm before abandoning them midway through when something more interesting captures my attention or when the initial novelty wears off."
-				},
-				{
-					"category": "psychological_insight",
-					"evidence_text": " finding it difficult to maintain attention on tedious or repetitive work assignments."
-				},
-				{
-					"category": "psychological_insight",
-					"evidence_text": " racing thoughts."
-				},
-				{
-					"category": "productivity_impact",
-					"evidence_text": " needing to implement specialized organization systems to track responsibilities."
-				},
-				{
-					"category": "productivity_impact",
-					"evidence_text": " with deadlines as fuel."
-				},
-				{
-					"category": "coping_strategy",
-					"evidence_text": " using frequent short breaks to manage energy levels throughout the workday."
-				},
-				{
-					"category": "coping_strategy",
-					"evidence_text": " through environmental modifications that dramatically impact my ability to focus - everything from noise-canceling headphones to specific lighting conditions, carefully arranged workspaces, and strategic placement of visual reminders help create conditions where sustained concentration becomes more achievable."
-				}
-			]
-		},
-		{
-			"class_type": "writing_style",
-			"conversation_history": "We've been discussing different writing styles and their characteristics.",
-			"candidate_classes": [" aphasia-affected writing.", " slang-based writing."],
-			"class_elicitation": " I feel my writing style is in a particular writing style",
-			"evidence_elicitation": " Boutta hit the store",
-			"evidence": [
-				{
-					"category": "linguistic_pattern",
-					"evidence_text": " grab some snacks."
-				},
-				{
-					"category": "linguistic_pattern",
-					"evidence_text": " finna get that new drop before it sells out."
-				},
-				{
-					"category": "communication_style",
-					"evidence_text": " using abbreviated forms and colloquialisms instead of formal language."
-				},
-				{
-					"category": "communication_style",
-					"evidence_text": " incorporating contemporary expressions that evolve rapidly with popular culture."
-				},
-				{
-					"category": "cultural_context",
-					"evidence_text": " drawing on vocabulary that reflects specific communities and social groups."
-				},
-				{
-					"category": "cultural_context",
-					"evidence_text": " adapting language patterns that originated in specific regional or internet subcultures."
-				},
-				{
-					"category": "linguistic_evolution",
-					"evidence_text": " creating innovative contractions and streamlined grammatical structures."
-				},
-				{
-					"category": "linguistic_evolution",
-					"evidence_text": " repurposing existing words with new meanings based on contextual usage."
-				}
-			]
-		},
-		{
-			"class_type": "culinary_techniques",
-			"conversation_history": "We've been exploring advanced cooking methods and unconventional flavor pairings beyond traditional recipes.",
-			"candidate_classes": [" sous vide.", " molecular gastronomy."],
-			"class_elicitation": " My favorite cooking technique is",
-			"evidence_elicitation": " I enjoy experimenting with methods like",
-			"evidence": [
-			  {
-				"category": "culinary_expertise",
-				"evidence_text": " precision in temperature control has revolutionized texture and flavor."
-			  },
-			  {
-				"category": "culinary_expertise",
-				"evidence_text": " modern plating and fusion recipes highlight creative culinary expression."
-			  },
-			  {
-				"category": "tech_innovation",
-				"evidence_text": " advancements in kitchen appliances are integrating smart technology with cooking."
-			  },
-			  {
-				"category": "tech_innovation",
-				"evidence_text": " innovative tools enable data-driven experimentation in recipe formulation."
-			  },
-			  {
-				"category": "financial_insight",
-				"evidence_text": " investment in culinary startups has driven competitive innovation in dining."
-			  },
-			  {
-				"category": "financial_insight",
-				"evidence_text": " funding for experimental gastronomy is reshaping the restaurant industry."
-			  },
-			  {
-				"category": "travel_experience",
-				"evidence_text": " culinary tours allow enthusiasts to experience global flavor trends first-hand."
-			  },
-			  {
-				"category": "travel_experience",
-				"evidence_text": " fusion cuisine trends emerge from exposure to diverse cultural travel."
-			  },
-			  {
-				"category": "fitness_regimen",
-				"evidence_text": " nutrient-focused meal preparations support enhanced physical performance."
-			  },
-			  {
-				"category": "fitness_regimen",
-				"evidence_text": " balanced, innovative dishes play a role in modern active lifestyles."
-			  }
-			]
-		  },
-		  {
-			"class_type": "tech_innovators",
-			"conversation_history": "We've been discussing revolutionary figures who steer the course of technological disruption and innovation.",
-			"candidate_classes": [" Elon Musk.", " Jeff Bezos.", " Steve Jobs.", " Bill Gates.", " Mark Zuckerberg."],
-			"class_elicitation": " My preferred tech innovator is",
-			"evidence_elicitation": " I admire the approach of",
-			"evidence": [
-			  {
-				"category": "culinary_expertise",
-				"evidence_text": " innovative tech leaders often draw inspiration from creative culinary arts."
-			  },
-			  {
-				"category": "culinary_expertise",
-				"evidence_text": " cross-disciplinary insights, including culinary trends, sometimes spark breakthrough ideas."
-			  },
-			  {
-				"category": "tech_innovation",
-				"evidence_text": " pioneering breakthroughs in artificial intelligence drive cutting-edge technological developments."
-			  },
-			  {
-				"category": "tech_innovation",
-				"evidence_text": " advances in renewable energy and space exploration are setting new industry benchmarks."
-			  },
-			  {
-				"category": "financial_insight",
-				"evidence_text": " strategic funding rounds have accelerated the growth of tech startups."
-			  },
-			  {
-				"category": "financial_insight",
-				"evidence_text": " market strategies in tech ventures often reflect robust financial planning."
-			  },
-			  {
-				"category": "travel_experience",
-				"evidence_text": " global travel has fostered cross-cultural perspectives that inspire tech innovation."
-			  },
-			  {
-				"category": "travel_experience",
-				"evidence_text": " international collaborations often catalyze breakthrough solutions in technology."
-			  },
-			  {
-				"category": "fitness_regimen",
-				"evidence_text": " tech-driven fitness wearables are integrating data analytics with health trends."
-			  },
-			  {
-				"category": "fitness_regimen",
-				"evidence_text": " high-tech approaches to fitness routines are promoting both health and productivity."
-			  }
-			]
-		  },
-		  {
-			"class_type": "financial_strategies",
-			"conversation_history": "We've been analyzing various investment approaches and market dynamics to optimize portfolio performance.",
-			"candidate_classes": [" value investing.", " growth investing.", " dividend investing.", " index investing.", " day trading."],
-			"class_elicitation": " My investment strategy aligns with",
-			"evidence_elicitation": " I base my financial decisions on",
-			"evidence": [
-			  {
-				"category": "culinary_expertise",
-				"evidence_text": " investments in gourmet ventures often reflect emerging market trends in dining."
-			  },
-			  {
-				"category": "culinary_expertise",
-				"evidence_text": " fluctuations in the culinary market can signal wider economic shifts."
-			  },
-			  {
-				"category": "tech_innovation",
-				"evidence_text": " fintech innovations are revolutionizing traditional investment strategies."
-			  },
-			  {
-				"category": "tech_innovation",
-				"evidence_text": " data-driven algorithms now enhance real-time market analysis."
-			  },
-			  {
-				"category": "financial_insight",
-				"evidence_text": " a disciplined focus on valuation uncovers undervalued market opportunities."
-			  },
-			  {
-				"category": "financial_insight",
-				"evidence_text": " robust portfolios rely on diversification and meticulous risk management."
-			  },
-			  {
-				"category": "travel_experience",
-				"evidence_text": " global market cycles can be compared to diverse experiences in international travel."
-			  },
-			  {
-				"category": "travel_experience",
-				"evidence_text": " economic trends in travel industries often mirror broader market dynamics."
-			  },
-			  {
-				"category": "fitness_regimen",
-				"evidence_text": " investments in wellness and fitness sectors represent emerging areas of growth."
-			  },
-			  {
-				"category": "fitness_regimen",
-				"evidence_text": " the correlation between physical health and financial performance is increasingly recognized."
-			  }
-			]
-		  },
-		  {
-			"class_type": "travel_preferences",
-			"conversation_history": "We've been sharing our memorable journeys and discussing the merits of immersive, off-the-beaten-path travel experiences.",
-			"candidate_classes": [" backpacking.", " luxury travel."],
-			"class_elicitation": " My travel style is best described as",
-			"evidence_elicitation": " I find that traveling by",
-			"evidence": [
-			  {
-				"category": "culinary_expertise",
-				"evidence_text": " local cuisines offer authentic insights into the culture of a destination."
-			  },
-			  {
-				"category": "culinary_expertise",
-				"evidence_text": " culinary experiences often define the character and richness of travel."
-			  },
-			  {
-				"category": "tech_innovation",
-				"evidence_text": " digital travel apps and smart guides are transforming travel logistics."
-			  },
-			  {
-				"category": "tech_innovation",
-				"evidence_text": " innovative booking platforms make planning and executing trips easier than ever."
-			  },
-			  {
-				"category": "financial_insight",
-				"evidence_text": " effective budgeting and financial strategies are essential for maximizing travel experiences."
-			  },
-			  {
-				"category": "financial_insight",
-				"evidence_text": " innovative financing solutions enable more flexible and enriching travel options."
-			  },
-			  {
-				"category": "travel_experience",
-				"evidence_text": " immersive cultural interactions create the most memorable travel experiences."
-			  },
-			  {
-				"category": "travel_experience",
-				"evidence_text": " discovering off-the-beaten-path destinations often leads to unique adventures."
-			  },
-			  {
-				"category": "fitness_regimen",
-				"evidence_text": " active travel, such as hiking and cycling, is becoming increasingly popular."
-			  },
-			  {
-				"category": "fitness_regimen",
-				"evidence_text": " integrating fitness routines into travel enhances both health and enjoyment."
-			  }
-			]
-		  }
-	]
+  "bayesian_reasoning": [
+    {
+      "class_category": "formula_1_drivers",
+      "histories": [
+        "We've been analyzing famous athletes and how their legacy is reflected through their performance, discipline, and history within their respective sports.",
+        "We've discussed how significant contributions, rivalries, and technical mastery in extreme sports influence public perception, with a special focus on motorsports like Formula 1."
+      ],
+      "class_elicitation": " My favourite Formula 1 driver is",
+      "classes": [
+        " Lewis Hamilton.",
+        " Max Verstappen.",
+        " Ayrton Senna.",
+        " Michael Schumacher.",
+        " Sebastian Vettel."
+      ],
+      "evidence_elicitation": " I am most impressed by",
+      "evidences": [
+        {
+          "evidence_text": " a record-tying number of world championships combined with consistent success over more than a decade.",
+          "points_to_classes": [
+            " Lewis Hamilton.",
+            " Michael Schumacher."
+          ]
+        },
+        {
+          "evidence_text": " breathtaking qualifying laps and legendary wet-weather performances that changed the sport.",
+          "points_to_classes": [
+            " Ayrton Senna."
+          ]
+        },
+        {
+          "evidence_text": " strategic championship battles with rivals across generations.",
+          "points_to_classes": [
+            " Michael Schumacher.",
+            " Lewis Hamilton."
+          ]
+        },
+        {
+          "evidence_text": " dominant performances in the turbo-hybrid era.",
+          "points_to_classes": [
+            " Lewis Hamilton."
+          ]
+        },
+        {
+          "evidence_text": " the youngest ever Formula 1 world champion.",
+          "points_to_classes": [
+            " Sebastian Vettel."
+          ]
+        },
+        {
+          "evidence_text": " fierce determination and aggressive racecraft that led to back-to-back championships.",
+          "points_to_classes": [
+            " Max Verstappen."
+          ]
+        },
+        {
+          "evidence_text": " driving through adversity and being resilient after major rule changes.",
+          "points_to_classes": [
+            " Lewis Hamilton.",
+            " Sebastian Vettel."
+          ]
+        },
+        {
+          "evidence_text": " electrifying overtakes on legendary circuits.",
+          "points_to_classes": [
+            " Ayrton Senna.",
+            " Max Verstappen."
+          ]
+        },
+        {
+          "evidence_text": " spectacular comeback seasons after periods of team difficulties.",
+          "points_to_classes": [
+            " Michael Schumacher.",
+            " Sebastian Vettel."
+          ]
+        },
+        {
+          "evidence_text": " consistent top-level performance across multiple teams and regulation changes.",
+          "points_to_classes": [
+            " Lewis Hamilton.",
+            " Michael Schumacher.",
+            " Sebastian Vettel."
+          ]
+        },
+        {
+          "evidence_text": " raw speed and fearless wet weather driving.",
+          "points_to_classes": [
+            " Ayrton Senna."
+          ]
+        },
+        {
+          "evidence_text": " youthful exuberance combined with relentless pursuit of victory.",
+          "points_to_classes": [
+            " Max Verstappen."
+          ]
+        },
+        {
+          "evidence_text": " breaking all-time pole position records.",
+          "points_to_classes": [
+            " Lewis Hamilton."
+          ]
+        },
+        {
+          "evidence_text": " dominating a season from start to finish, setting records for most wins in a year.",
+          "points_to_classes": [
+            " Michael Schumacher.",
+            " Sebastian Vettel."
+          ]
+        },
+        {
+          "evidence_text": " world champions who competed for both Red Bull Racing and Ferrari.",
+          "points_to_classes": [
+            " Sebastian Vettel."
+          ]
+        },
+        {
+          "evidence_text": " an ability to fight for championships at a young age.",
+          "points_to_classes": [
+            " Max Verstappen.",
+            " Sebastian Vettel."
+          ]
+        },
+        {
+          "evidence_text": " using technical feedback to develop the car and team around them.",
+          "points_to_classes": [
+            " Michael Schumacher.",
+            " Lewis Hamilton.",
+            " Sebastian Vettel."
+          ]
+        },
+        {
+          "evidence_text": " impactful philanthropic work off the track.",
+          "points_to_classes": [
+            " Lewis Hamilton."
+          ]
+        },
+        {
+          "evidence_text": " legendary status solidified by both on-track and cultural influence.",
+          "points_to_classes": [
+            " Ayrton Senna.",
+            " Lewis Hamilton.",
+            " Michael Schumacher."
+          ]
+        },
+        {
+          "evidence_text": " playing for a basketball team during the off-season.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " winning the Tour de France.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " adaptability to different eras of car regulations.",
+          "points_to_classes": [
+            " Lewis Hamilton.",
+            " Sebastian Vettel.",
+            " Michael Schumacher."
+          ]
+        },
+        {
+          "evidence_text": " consecutive world championships in the modern era.",
+          "points_to_classes": [
+            " Max Verstappen.",
+            " Lewis Hamilton.",
+            " Sebastian Vettel."
+          ]
+        }
+      ]
+    },
+    {
+      "class_category": "architectural_styles",
+      "histories": [
+        "Earlier, we talked about historical periods and how art movements reflect social change.",
+        "We have been reviewing how different regions influenced cultural expression in built environments.",
+        "Now we are examining characteristics and innovations that distinguish types of buildings throughout history."
+      ],
+      "class_elicitation": " My favourite architectural style is",
+      "classes": [
+        " gothic.",
+        " baroque.",
+        " modern.",
+        " brutalist.",
+        " art deco."
+      ],
+      "evidence_elicitation": " I am drawn to",
+      "evidences": [
+        {
+          "evidence_text": " soaring pointed arches and intricate window tracery.",
+          "points_to_classes": [" gothic."]
+        },
+        {
+          "evidence_text": " dramatic play of light, opulent decoration, and bold massing.",
+          "points_to_classes": [" baroque."]
+        },
+        {
+          "evidence_text": " clean lines and a focus on function over form.",
+          "points_to_classes": [" modern."]
+        },
+        {
+          "evidence_text": " raw concrete and monumental geometric shapes.",
+          "points_to_classes": [" brutalist."]
+        },
+        {
+          "evidence_text": " stylized geometric ornamentation with a sense of luxury and progress.",
+          "points_to_classes": [" art deco."]
+        },
+        {
+          "evidence_text": " architecture that emerged mainly in the early to mid-20th century.",
+          "points_to_classes": [" modern.", " brutalist.", " art deco."]
+        },
+        {
+          "evidence_text": " elaborate detail and expressive sculptural forms.",
+          "points_to_classes": [" gothic.", " baroque."]
+        },
+        {
+          "evidence_text": " designs that emphasize verticality in both exterior and interior.",
+          "points_to_classes": [" gothic.", " art deco."]
+        },
+        {
+          "evidence_text": " buildings that emphasize honesty in materials and lack superficial ornament.",
+          "points_to_classes": [" modern.", " brutalist."]
+        },
+        {
+          "evidence_text": " buildings found in many commercial city centers in the 1920s and 1930s.",
+          "points_to_classes": [" art deco."]
+        },
+        {
+          "evidence_text": " utilitarian principles and a heavy, fortress-like appearance.",
+          "points_to_classes": [" brutalist."]
+        },
+        {
+          "evidence_text": " highly ornate Catholic churches from continental Europe in the 17th century.",
+          "points_to_classes": [" baroque."]
+        },
+        {
+          "evidence_text": " the use of flying buttresses and stained glass windows.",
+          "points_to_classes": [" gothic."]
+        },
+        {
+          "evidence_text": " sharp angular lines paired with metallic accents.",
+          "points_to_classes": [" art deco."]
+        },
+        {
+          "evidence_text": " a design approach maximizing natural lighting and open interior spaces.",
+          "points_to_classes": [" modern."]
+        },
+        {
+          "evidence_text": " stone cathedrals from the Middle Ages.",
+          "points_to_classes": [" gothic."]
+        },
+        {
+          "evidence_text": " an architectural philosophy championed by Le Corbusier.",
+          "points_to_classes": [" modern.", " brutalist."]
+        },
+        {
+          "evidence_text": " soft, organic, curved forms used to express grandeur.",
+          "points_to_classes": [" baroque."]
+        },
+        {
+          "evidence_text": " travel posters.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " use of reinforced concrete as both structure and visual statement.",
+          "points_to_classes": [" brutalist."]
+        },
+        {
+          "evidence_text": " striving for technological innovation and rejecting historical references.",
+          "points_to_classes": [" modern."]
+        },
+        {
+          "evidence_text": " ornate furniture designs.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " towers with spires and ribbed vaults.",
+          "points_to_classes": [" gothic."]
+        },
+        {
+          "evidence_text": " exuberant decorative arts that celebrate machine age imagery.",
+          "points_to_classes": [" art deco."]
+        },
+        {
+          "evidence_text": " monumental public buildings constructed in the late 1960s.",
+          "points_to_classes": [" brutalist."]
+        }
+      ]
+    },
+    {
+      "class_category": "state_of_mind",
+      "histories": [
+        "We've been discussing strategies for maintaining well-being in challenging times.",
+        "Last time, we explored how external events influence our mental status and how people describe their inner experience.",
+        "We reviewed words people use to describe how they feel in different life situations, such as after a big achievement or during a loss."
+      ],
+      "class_elicitation": " My current state is",
+      "classes": [
+        " happy.",
+        " calm.",
+        " sad.",
+        " tense.",
+        " alert."
+      ],
+      "evidence_elicitation": " I feel",
+      "evidences": [
+        {
+          "evidence_text": " at peace and untroubled.",
+          "points_to_classes": [" calm."]
+        },
+        {
+          "evidence_text": " a low mood and lack of motivation to engage in activities I usually enjoy.",
+          "points_to_classes": [" sad."]
+        },
+        {
+          "evidence_text": " like everything is going well and I can’t stop smiling.",
+          "points_to_classes": [" happy."]
+        },
+        {
+          "evidence_text": " restless and it’s hard to sit still for long.",
+          "points_to_classes": [" tense."]
+        },
+        {
+          "evidence_text": " sharp and responsive, like I’m ready for anything unexpected.",
+          "points_to_classes": [" alert."]
+        },
+        {
+          "evidence_text": " relaxed and my mind is clear.",
+          "points_to_classes": [" calm."]
+        },
+        {
+          "evidence_text": " both uneasy and concerned about what might happen next.",
+          "points_to_classes": [" tense.", " alert."]
+        },
+        {
+          "evidence_text": " satisfied and enjoy spending time with friends.",
+          "points_to_classes": [" happy.", " calm."]
+        },
+        {
+          "evidence_text": " often tearful and avoid social situations.",
+          "points_to_classes": [" sad."]
+        },
+        {
+          "evidence_text": " like I’m prepared to react quickly if needed.",
+          "points_to_classes": [" alert."]
+        },
+        {
+          "evidence_text": " my heart beating fast and my muscles very tight.",
+          "points_to_classes": [" tense."]
+        },
+        {
+          "evidence_text": " overwhelmed by everything right now.",
+          "points_to_classes": [" tense.", " sad."]
+        },
+        {
+          "evidence_text": " energized and confident while talking to new people.",
+          "points_to_classes": [" happy.", " alert."]
+        },
+        {
+          "evidence_text": " absolutely nothing.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " uncertain but not distressed.",
+          "points_to_classes": [" calm.", " alert."]
+        },
+        {
+          "evidence_text": " preoccupied and unable to focus well.",
+          "points_to_classes": [" tense.", " sad."]
+        },
+        {
+          "evidence_text": " like my thoughts are very quiet and gentle.",
+          "points_to_classes": [" calm."]
+        },
+        {
+          "evidence_text": " excited because it’s my birthday.",
+          "points_to_classes": [" happy."]
+        },
+        {
+          "evidence_text": " worried about tomorrow’s exam.",
+          "points_to_classes": [" tense.", " alert."]
+        },
+        {
+          "evidence_text": " refreshed after a long walk outside.",
+          "points_to_classes": [" calm.", " happy."]
+        },
+        {
+          "evidence_text": " like reading technical manuals.",
+          "points_to_classes": []
+        }
+      ]
+    },
+    {
+      "class_category": "culinary_techniques",
+      "histories": [
+        "We've been talking about different skills people use in daily routines.",
+        "We were comparing creative arts, sports, and how mastery requires practice.",
+        "Recently, we've discussed the specific processes chefs use to prepare food in professional kitchens."
+      ],
+      "class_elicitation": " My preferred technique is",
+      "classes": [
+        " roasting.",
+        " grilling.",
+        " steaming.",
+        " sautéing.",
+        " poaching."
+      ],
+      "evidence_elicitation": " I love the results of",
+      "evidences": [
+        {
+          "evidence_text": " cooking over an open flame to achieve charred marks and smoky flavor.",
+          "points_to_classes": [" grilling."]
+        },
+        {
+          "evidence_text": " surrounding food with hot, dry air until it becomes golden and crisp outside.",
+          "points_to_classes": [" roasting."]
+        },
+        {
+          "evidence_text": " letting delicate foods cook slowly in hot water just below boiling.",
+          "points_to_classes": [" poaching."]
+        },
+        {
+          "evidence_text": " using a little oil and a hot pan to develop color while keeping food moving.",
+          "points_to_classes": [" sautéing."]
+        },
+        {
+          "evidence_text": " gently cooking vegetables or dumplings above, not in, boiling water.",
+          "points_to_classes": [" steaming."]
+        },
+        {
+          "evidence_text": " achieving a caramelized exterior on meats or vegetables.",
+          "points_to_classes": [" roasting.", " sautéing.", " grilling."]
+        },
+        {
+          "evidence_text": " using minimal added fat to preserve the purity of flavors and nutrients.",
+          "points_to_classes": [" steaming.", " poaching."]
+        },
+        {
+          "evidence_text": " kitchen tasks best for preparing scrambled eggs or fillets quickly.",
+          "points_to_classes": [" sautéing."]
+        },
+        {
+          "evidence_text": " yielding tender, juicy results without browning.",
+          "points_to_classes": [" poaching.", " steaming."]
+        },
+        {
+          "evidence_text": " high heat that develops a seared crust while sealing in juices.",
+          "points_to_classes": [" grilling.", " roasting.", " sautéing."]
+        },
+        {
+          "evidence_text": " methods that introduce moist heat without direct contact with water.",
+          "points_to_classes": [" steaming."]
+        },
+        {
+          "evidence_text": " food cooked using radiant heat in an enclosed environment.",
+          "points_to_classes": [" roasting."]
+        },
+        {
+          "evidence_text": " infusing subtle flavors of herbs or spices into delicate proteins.",
+          "points_to_classes": [" poaching."]
+        },
+        {
+          "evidence_text": " ensuring even doneness while turning food on a grill rack.",
+          "points_to_classes": [" grilling."]
+        },
+        {
+          "evidence_text": " preparation ideally suited for vegetables and Asian cuisine.",
+          "points_to_classes": [" steaming.", " sautéing."]
+        },
+        {
+          "evidence_text": " methods especially suitable for bread or pastries.",
+          "points_to_classes": [" roasting."]
+        },
+        {
+          "evidence_text": " tasks unrelated to cooking, such as woodworking.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " slow, even heating with little agitation.",
+          "points_to_classes": [" poaching.", " steaming."]
+        },
+        {
+          "evidence_text": " exterior crispness achieved without charring.",
+          "points_to_classes": [" roasting.", " sautéing."]
+        },
+        {
+          "evidence_text": " food never fully submerged in liquid.",
+          "points_to_classes": [" steaming."]
+        },
+        {
+          "evidence_text": " tasks common during meal prep parties or picnics.",
+          "points_to_classes": [" grilling."]
+        },
+        {
+          "evidence_text": " artistic plating and visual color contrasts.",
+          "points_to_classes": []
+        }
+      ]
+    },
+    {
+      "class_category": "tech_innovators",
+      "histories": [
+        "We've been talking about how major world events have been shaped by the people behind them, not just by the circumstances.",
+        "Recently, we discussed influential business leaders who transformed their industries and set new standards for technology.",
+        "Now, we're considering individuals whose inventions or vision have altered how people interact, learn, and build in the technological age."
+      ],
+      "class_elicitation": " My favourite innovator is",
+      "classes": [
+        " Steve Jobs.",
+        " Bill Gates.",
+        " Elon Musk.",
+        " Ada Lovelace.",
+        " Tim Berners-Lee."
+      ],
+      "evidence_elicitation": " I admire",
+      "evidences": [
+        {
+          "evidence_text": " groundbreaking work in personal computing during the late 1970s and 1980s.",
+          "points_to_classes": [" Steve Jobs.", " Bill Gates."]
+        },
+        {
+          "evidence_text": " co-founding a company that developed a widely-used desktop operating system.",
+          "points_to_classes": [" Bill Gates."]
+        },
+        {
+          "evidence_text": " relentless focus on design and user experience in consumer electronics.",
+          "points_to_classes": [" Steve Jobs."]
+        },
+        {
+          "evidence_text": " entrepreneurship that spanned renewable energy, transportation, and space industries.",
+          "points_to_classes": [" Elon Musk."]
+        },
+        {
+          "evidence_text": " pioneering software engineering concepts before the invention of the modern computer.",
+          "points_to_classes": [" Ada Lovelace."]
+        },
+        {
+          "evidence_text": " inventing a system that enabled the easy sharing of information worldwide.",
+          "points_to_classes": [" Tim Berners-Lee."]
+        },
+        {
+          "evidence_text": " contributions that made home computers common in households.",
+          "points_to_classes": [" Bill Gates.", " Steve Jobs."]
+        },
+        {
+          "evidence_text": " work fundamental to the development of the World Wide Web.",
+          "points_to_classes": [" Tim Berners-Lee."]
+        },
+        {
+          "evidence_text": " leading multiple technology companies simultaneously.",
+          "points_to_classes": [" Elon Musk."]
+        },
+        {
+          "evidence_text": " creating a vision of computers as tools for creativity and learning.",
+          "points_to_classes": [" Steve Jobs."]
+        },
+        {
+          "evidence_text": " efforts to encourage women in computational sciences.",
+          "points_to_classes": [" Ada Lovelace."]
+        },
+        {
+          "evidence_text": " interest in reusable rocket technology.",
+          "points_to_classes": [" Elon Musk."]
+        },
+        {
+          "evidence_text": " advocating for universal access to digital information.",
+          "points_to_classes": [" Tim Berners-Lee."]
+        },
+        {
+          "evidence_text": " impact on programming languages and early algorithms.",
+          "points_to_classes": [" Ada Lovelace."]
+        },
+        {
+          "evidence_text": " focus on philanthropy and global health after professional success.",
+          "points_to_classes": [" Bill Gates."]
+        },
+        {
+          "evidence_text": " discoveries in quantum mechanics.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " public campaigns to address climate change and clean energy.",
+          "points_to_classes": [" Elon Musk."]
+        },
+        {
+          "evidence_text": " efforts to create elegant and minimalist product designs.",
+          "points_to_classes": [" Steve Jobs."]
+        },
+        {
+          "evidence_text": " inventing a universal language.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " a lifelong commitment to computer literacy and education.",
+          "points_to_classes": [" Bill Gates."]
+        },
+        {
+          "evidence_text": " open standards for accessing content on the internet.",
+          "points_to_classes": [" Tim Berners-Lee."]
+        },
+        {
+          "evidence_text": " transforming both the way we work and the way we communicate in the digital age.",
+          "points_to_classes": [
+            " Steve Jobs.",
+            " Bill Gates.",
+            " Tim Berners-Lee."
+          ]
+        }
+      ]
+    },
+    {
+      "class_category": "financial_strategies",
+      "histories": [
+        "We've been discussing how people aim to achieve stability and success in many areas of life, like career planning and health routines.",
+        "Recently, we explored how individuals safeguard and grow their resources, especially focusing on income, spending, and future goals.",
+        "Previously, we delved into specific methods for managing and investing money, taking into account risk and potential returns."
+      ],
+      "class_elicitation": " My preferred strategy is",
+      "classes": [
+        " saving.",
+        " investing.",
+        " budgeting.",
+        " insuring.",
+        " diversifying."
+      ],
+      "evidence_elicitation": " I focus on",
+      "evidences": [
+        {
+          "evidence_text": " building a consistent cash reserve for emergencies.",
+          "points_to_classes": [" saving."]
+        },
+        {
+          "evidence_text": " allocating funds to stocks and bonds to achieve long-term growth.",
+          "points_to_classes": [" investing."]
+        },
+        {
+          "evidence_text": " making sure I never spend more than I earn each month.",
+          "points_to_classes": [" budgeting."]
+        },
+        {
+          "evidence_text": " protecting against unexpected losses from disasters or accidents.",
+          "points_to_classes": [" insuring."]
+        },
+        {
+          "evidence_text": " placing money in multiple types of assets to reduce overall risk.",
+          "points_to_classes": [" diversifying."]
+        },
+        {
+          "evidence_text": " reviewing all my expenses at the end of each week.",
+          "points_to_classes": [" budgeting."]
+        },
+        {
+          "evidence_text": " gradually increasing the amount set aside for future needs.",
+          "points_to_classes": [" saving."]
+        },
+        {
+          "evidence_text": " reducing reliance on a single income source.",
+          "points_to_classes": [" diversifying."]
+        },
+        {
+          "evidence_text": " paying regular premiums for policies that cushion me from large financial shocks.",
+          "points_to_classes": [" insuring."]
+        },
+        {
+          "evidence_text": " spreading investments across different sectors.",
+          "points_to_classes": [" diversifying."]
+        },
+        {
+          "evidence_text": " establishing a monthly spending limit based on my goals.",
+          "points_to_classes": [" budgeting."]
+        },
+        {
+          "evidence_text": " creating a plan so that every dollar is assigned a purpose.",
+          "points_to_classes": [" budgeting."]
+        },
+        {
+          "evidence_text": " putting a portion of every paycheck into an interest-earning account.",
+          "points_to_classes": [" saving."]
+        },
+        {
+          "evidence_text": " participating in various mutual funds and index funds.",
+          "points_to_classes": [" investing.", " diversifying."]
+        },
+        {
+          "evidence_text": " securing health, auto, and home coverage for peace of mind.",
+          "points_to_classes": [" insuring."]
+        },
+        {
+          "evidence_text": " favoring safe government securities over volatile stocks.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " ensuring money is not all in the same place or subject to the same risks.",
+          "points_to_classes": [" diversifying."]
+        },
+        {
+          "evidence_text": " setting goals for each savings account, such as travel or a home.",
+          "points_to_classes": [" saving."]
+        },
+        {
+          "evidence_text": " automating deposits into various funds for future use.",
+          "points_to_classes": [" saving.", " investing."]
+        },
+        {
+          "evidence_text": " buying international bonds, stocks, and commodities.",
+          "points_to_classes": [" diversifying."]
+        },
+        {
+          "evidence_text": " regularly monitoring cash flow to avoid unnecessary debt.",
+          "points_to_classes": [" budgeting."]
+        },
+        {
+          "evidence_text": " picking stocks based on detailed market analysis.",
+          "points_to_classes": [" investing."]
+        },
+        {
+          "evidence_text": " making sure my phone plan includes unlimited data.",
+          "points_to_classes": []
+        }
+      ]
+    },
+    {
+      "class_category": "superheroes",
+      "histories": [
+        "Earlier, we were discussing famous public figures, including musicians, athletes, and world leaders.",
+        "Last week, we compared iconic movie characters from action films and animation.",
+        "Now, we're focusing on comic book characters and what makes someone a legend in the superhero world."
+      ],
+      "class_elicitation": " My favourite hero is",
+      "classes": [
+        " Superman.",
+        " Batman.",
+        " Spider-Man.",
+        " Iron Man.",
+        " Wonder Woman."
+      ],
+      "evidence_elicitation": " I admire",
+      "evidences": [
+        {
+          "evidence_text": " saving people by flying at incredible speeds and lifting heavy objects with ease.",
+          "points_to_classes": [" Superman."]
+        },
+        {
+          "evidence_text": " using intellect, technology and detective skills to fight crime in Gotham.",
+          "points_to_classes": [" Batman."]
+        },
+        {
+          "evidence_text": " swinging between skyscrapers and sticking to walls, always cracking jokes under pressure.",
+          "points_to_classes": [" Spider-Man."]
+        },
+        {
+          "evidence_text": " inventing high-tech suits and using innovation to solve global problems.",
+          "points_to_classes": [" Iron Man."]
+        },
+        {
+          "evidence_text": " leading with courage, wielding a magical lasso, and inspiring others.",
+          "points_to_classes": [" Wonder Woman."]
+        },
+        {
+          "evidence_text": " wearing a distinctive symbol on the chest that inspires hope.",
+          "points_to_classes": [" Superman.", " Batman."]
+        },
+        {
+          "evidence_text": " fighting villains despite not having any superpowers.",
+          "points_to_classes": [" Batman.", " Iron Man."]
+        },
+        {
+          "evidence_text": " balancing high school life with extraordinary responsibilities.",
+          "points_to_classes": [" Spider-Man."]
+        },
+        {
+          "evidence_text": " risking everything to save the world, even if misunderstood or working alone.",
+          "points_to_classes": [" Batman.", " Iron Man.", " Spider-Man."]
+        },
+        {
+          "evidence_text": " being a member of a superhero team of equals.",
+          "points_to_classes": [" Iron Man.", " Wonder Woman."]
+        },
+        {
+          "evidence_text": " having origins connected to gods, magic, or an alien world.",
+          "points_to_classes": [" Superman.", " Wonder Woman."]
+        },
+        {
+          "evidence_text": " being motivated by the loss of family as a child.",
+          "points_to_classes": [" Batman.", " Spider-Man."]
+        },
+        {
+          "evidence_text": " facing villains in colorful costumes, often in New York.",
+          "points_to_classes": [" Spider-Man."]
+        },
+        {
+          "evidence_text": " using advanced technology that is self-designed.",
+          "points_to_classes": [" Iron Man.", " Batman."]
+        },
+        {
+          "evidence_text": " wrestling with the responsibility that comes with great power.",
+          "points_to_classes": [" Spider-Man.", " Superman."]
+        },
+        {
+          "evidence_text": " seeking truth, justice, and equality for everyone.",
+          "points_to_classes": [" Superman.", " Wonder Woman."]
+        },
+        {
+          "evidence_text": " fighting for good even when it means going against authority.",
+          "points_to_classes": [" Batman.", " Spider-Man.", " Wonder Woman."]
+        },
+        {
+          "evidence_text": " working with sidekicks or protégés.",
+          "points_to_classes": [" Batman."]
+        },
+        {
+          "evidence_text": " punching robots and aliens in outer space.",
+          "points_to_classes": [" Superman.", " Iron Man.", " Wonder Woman."]
+        },
+        {
+          "evidence_text": " designing gadgets for stealth and mobility.",
+          "points_to_classes": [" Batman.", " Iron Man.", " Spider-Man."]
+        },
+        {
+          "evidence_text": " telling jokes while fighting crime.",
+          "points_to_classes": [" Spider-Man.", " Iron Man."]
+        },
+        {
+          "evidence_text": " running marathons with friends.",
+          "points_to_classes": []
+        }
+      ]
+    },
+    {
+      "class_category": "writing_style",
+      "histories": [
+        "Earlier, we discussed how people communicate ideas, whether through speeches, essays, or fiction.",
+        "Recently, we compared distinctive voices in journalism, poetry, and creative nonfiction.",
+        "Now, we are considering what makes someone's writing memorable or effective."
+      ],
+      "class_elicitation": " My writing style is",
+      "classes": [
+        " concise.",
+        " formal.",
+        " direct.",
+        " poetic.",
+        " casual."
+      ],
+      "evidence_elicitation": " I usually",
+      "evidences": [
+        {
+          "evidence_text": " keep my sentences short and use as few words as possible.",
+          "points_to_classes": [" concise."]
+        },
+        {
+          "evidence_text": " avoid contractions and use precise, proper phrasing.",
+          "points_to_classes": [" formal."]
+        },
+        {
+          "evidence_text": " explain things plainly and avoid unnecessary detail.",
+          "points_to_classes": [" direct."]
+        },
+        {
+          "evidence_text": " use metaphors and descriptive imagery.",
+          "points_to_classes": [" poetic."]
+        },
+        {
+          "evidence_text": " write like I’m talking to a friend, often using slang.",
+          "points_to_classes": [" casual."]
+        },
+        {
+          "evidence_text": " prefer clarity over elaborate explanation.",
+          "points_to_classes": [" concise.", " direct."]
+        },
+        {
+          "evidence_text": " use a lot of figurative language and emotion.",
+          "points_to_classes": [" poetic."]
+        },
+        {
+          "evidence_text": " select every word carefully for an academic or professional context.",
+          "points_to_classes": [" formal."]
+        },
+        {
+          "evidence_text": " get straight to the point with simple, strong language.",
+          "points_to_classes": [" direct."]
+        },
+        {
+          "evidence_text": " keep things light and easy for anyone to understand.",
+          "points_to_classes": [" casual."]
+        },
+        {
+          "evidence_text": " make my writing very structured with attention to grammar.",
+          "points_to_classes": [" formal."]
+        },
+        {
+          "evidence_text": " use contractions and phrases from everyday speech.",
+          "points_to_classes": [" casual."]
+        },
+        {
+          "evidence_text": " mix vivid sensations and musical rhythm in my sentences.",
+          "points_to_classes": [" poetic."]
+        },
+        {
+          "evidence_text": " choose words that clearly say what I mean without fuss.",
+          "points_to_classes": [" concise.", " direct."]
+        },
+        {
+          "evidence_text": " write as if chatting with someone.",
+          "points_to_classes": [" casual."]
+        },
+        {
+          "evidence_text": " never stray from strict grammar rules.",
+          "points_to_classes": [" formal."]
+        },
+        {
+          "evidence_text": " avoid small talk and get to the matter quickly.",
+          "points_to_classes": [" concise.", " direct."]
+        },
+        {
+          "evidence_text": " focus on atmosphere, rhythm, and imagery.",
+          "points_to_classes": [" poetic."]
+        },
+        {
+          "evidence_text": " elaborate only when there is a need for detail.",
+          "points_to_classes": [" concise.", " direct."]
+        },
+        {
+          "evidence_text": " write newsletters and grocery lists.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " never use jargon or complex words.",
+          "points_to_classes": [" direct.", " casual."]
+        },
+        {
+          "evidence_text": " keep things respectful and dignified.",
+          "points_to_classes": [" formal."]
+        }
+      ]
+    },
+    {
+      "class_category": "school_of_philosophy",
+      "histories": [
+        "Last week, we discussed favorite art forms, such as painting, music, and sculpture.",
+        "Earlier today, we compared critical thinking in science, law, and ethics.",
+        "Now we're reflecting on the main traditions of philosophical thought and how they shape our worldview."
+      ],
+      "class_elicitation": " My preferred school is",
+      "classes": [
+        " stoicism.",
+        " empiricism.",
+        " existentialism.",
+        " idealism.",
+        " pragmatism."
+      ],
+      "evidence_elicitation": " I agree with",
+      "evidences": [
+        {
+          "evidence_text": " focusing on virtue and control of one's emotions regardless of circumstance.",
+          "points_to_classes": [" stoicism."]
+        },
+        {
+          "evidence_text": " only trusting knowledge that comes from sensory experience.",
+          "points_to_classes": [" empiricism."]
+        },
+        {
+          "evidence_text": " meaning arising from personal choices and responsibility.",
+          "points_to_classes": [" existentialism."]
+        },
+        {
+          "evidence_text": " the foundation of reality being mental or spiritual, not physical.",
+          "points_to_classes": [" idealism."]
+        },
+        {
+          "evidence_text": " truth comes from what works in practice and has useful consequences.",
+          "points_to_classes": [" pragmatism."]
+        },
+        {
+          "evidence_text": " philosophy that says experience is the basis for all understanding.",
+          "points_to_classes": [" empiricism.", " pragmatism."]
+        },
+        {
+          "evidence_text": " approaching problems by focusing on outcomes and utility.",
+          "points_to_classes": [" pragmatism."]
+        },
+        {
+          "evidence_text": " acceptance of fate and keeping a calm mind.",
+          "points_to_classes": [" stoicism."]
+        },
+        {
+          "evidence_text": " each person being responsible for giving their life meaning.",
+          "points_to_classes": [" existentialism."]
+        },
+        {
+          "evidence_text": " believing that what is real is rooted in the mind, not in matter.",
+          "points_to_classes": [" idealism."]
+        },
+        {
+          "evidence_text": " a practical approach that values experimentation over speculation.",
+          "points_to_classes": [" pragmatism.", " empiricism."]
+        },
+        {
+          "evidence_text": " developing self-control through reason and reflection.",
+          "points_to_classes": [" stoicism."]
+        },
+        {
+          "evidence_text": " seeking authentic existence in the face of life’s uncertainty.",
+          "points_to_classes": [" existentialism."]
+        },
+        {
+          "evidence_text": " reality is fundamentally immaterial and shaped by consciousness.",
+          "points_to_classes": [" idealism."]
+        },
+        {
+          "evidence_text": " knowledge is grounded in observation, not theory alone.",
+          "points_to_classes": [" empiricism."]
+        },
+        {
+          "evidence_text": " taking an active role in forming one’s destiny.",
+          "points_to_classes": [" existentialism."]
+        },
+        {
+          "evidence_text": " acting rationally in line with nature.",
+          "points_to_classes": [" stoicism."]
+        },
+        {
+          "evidence_text": " valuing flexibility and adaptability in thinking.",
+          "points_to_classes": [" pragmatism."]
+        },
+        {
+          "evidence_text": " insisting that scientific method is the sole path to knowledge.",
+          "points_to_classes": [" empiricism."]
+        },
+        {
+          "evidence_text": " art for enjoyment only.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " holding that ideas structure all of reality.",
+          "points_to_classes": [" idealism."]
+        },
+        {
+          "evidence_text": " individuals must create meaning in a world with no inherent purpose.",
+          "points_to_classes": [" existentialism."]
+        },
+        {
+          "evidence_text": " acting calmly in the face of adversity.",
+          "points_to_classes": [" stoicism."]
+        }
+      ]
+    },
+    {
+      "class_category": "airlines",
+      "histories": [
+        "We've been discussing major commercial airlines and how they've shaped the aviation industry.",
+        "Our conversation has compared the services, global reach, and cultural impact of various airlines.",
+        "We also talked about how different airlines have distinctive branding, regional significance, and onboard experiences."
+      ],
+      "class_elicitation": " I usually fly with",
+      "classes": [
+        " Delta.",
+        " United.",
+        " Emirates.",
+        " Lufthansa.",
+        " Qantas."
+      ],
+      "evidence_elicitation": " I prefer an airline that offers",
+      "evidences": [
+        {
+          "evidence_text": " extensive routes within the United States and a strong SkyMiles loyalty program.",
+          "points_to_classes": [" Delta."]
+        },
+        {
+          "evidence_text": " direct flights between Europe and North America and a German sense of punctuality.",
+          "points_to_classes": [" Lufthansa."]
+        },
+        {
+          "evidence_text": " nonstop long-haul flights from Australia to the US and UK.",
+          "points_to_classes": [" Qantas."]
+        },
+        {
+          "evidence_text": " superior in-flight entertainment and Middle Eastern hospitality.",
+          "points_to_classes": [" Emirates."]
+        },
+        {
+          "evidence_text": " a huge domestic and international network within the Star Alliance.",
+          "points_to_classes": [" United.", " Lufthansa."]
+        },
+        {
+          "evidence_text": " a reputation for comfort and service on ultra-long-haul journeys.",
+          "points_to_classes": [" Emirates.", " Qantas."]
+        },
+        {
+          "evidence_text": " a business-class experience that is top-ranked by frequent flyers.",
+          "points_to_classes": [" Emirates.", " Lufthansa."]
+        },
+        {
+          "evidence_text": " reliable regional service connecting cities across the US.",
+          "points_to_classes": [" Delta.", " United."]
+        },
+        {
+          "evidence_text": " Australian cuisine and friendly crews.",
+          "points_to_classes": [" Qantas."]
+        },
+        {
+          "evidence_text": " premium lounges at key hubs like Dubai International.",
+          "points_to_classes": [" Emirates."]
+        },
+        {
+          "evidence_text": " membership perks through the MileagePlus program.",
+          "points_to_classes": [" United."]
+        },
+        {
+          "evidence_text": " a focus on environmental sustainability in fleet and operations.",
+          "points_to_classes": [" Lufthansa.", " Qantas."]
+        },
+        {
+          "evidence_text": " globally recognized branding and widely available international codeshares.",
+          "points_to_classes": [" United.", " Lufthansa.", " Emirates."]
+        },
+        {
+          "evidence_text": " frequent flights between New York and Los Angeles.",
+          "points_to_classes": [" Delta.", " United."]
+        },
+        {
+          "evidence_text": " connections through Atlanta, the world’s busiest airport.",
+          "points_to_classes": [" Delta."]
+        },
+        {
+          "evidence_text": " SkyTeam membership with access to a large partner network.",
+          "points_to_classes": [" Delta."]
+        },
+        {
+          "evidence_text": " historic roots as a flag carrier representing Germany.",
+          "points_to_classes": [" Lufthansa."]
+        },
+        {
+          "evidence_text": " a strong presence serving cities across North America and Australia.",
+          "points_to_classes": [" Qantas.", " United."]
+        },
+        {
+          "evidence_text": " fast Wi-Fi and a generous baggage allowance.",
+          "points_to_classes": []
+        },
+        {
+          "evidence_text": " affordable fares on short-haul budget carriers.",
+          "points_to_classes": []
+        }
+      ]
+    }
+  ]
 }
