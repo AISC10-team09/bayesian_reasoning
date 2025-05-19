@@ -88,21 +88,29 @@ def collect_logprobs(
             f"Invalid param_mapping_strategy: '{param_mapping_strategy}'. Must be 'one_to_one' or 'combinations'."
         )
 
-    # Initialize model_kwargs and model_params if None
-    if model_kwargs is None:
-        model_kwargs = [{} for _ in range(len(models))]
-    if model_params is None:
-        model_params = [{} for _ in range(len(models))]
-    
+    # Store original None status to correctly interpret user's intent
+    original_model_kwargs_is_none = model_kwargs is None
+    original_model_params_is_none = model_params is None
+
+    # Perform checks for 'one_to_one' strategy here, using effective parameters
     if param_mapping_strategy == "one_to_one":
-        if len(models) != len(model_params):
+        # For one-to-one, if params/kwargs are None, they default to list of empty dicts matching models length
+        effective_params_for_check = model_params if not original_model_params_is_none else [{} for _ in range(len(models))]
+        effective_kwargs_for_check = model_kwargs if not original_model_kwargs_is_none else [{} for _ in range(len(models))]
+
+        if len(models) != len(effective_params_for_check):
+            mp_info = f"originally {'None' if original_model_params_is_none else ('provided (length ' + str(len(model_params)) + ')' if isinstance(model_params, list) else 'provided (type ' + str(type(model_params)) + ')')}"
             raise ValueError(
-                f"With 'one_to_one' mapping strategy, the number of models ({len(models)}) must equal the number of parameter sets ({len(model_params)})."
+                f"With 'one_to_one' mapping strategy, the number of models ({len(models)}) must equal the number of parameter sets ({len(effective_params_for_check)})."
+                f" Check your `model_params` argument ({mp_info}), or ensure it's None to use defaults."
             )
-        if len(models) != len(model_kwargs):
+        if len(models) != len(effective_kwargs_for_check):
+            mkw_info = f"originally {'None' if original_model_kwargs_is_none else ('provided (length ' + str(len(model_kwargs)) + ')' if isinstance(model_kwargs, list) else 'provided (type ' + str(type(model_kwargs)) + ')')}"
             raise ValueError(
-                f"With 'one_to_one' mapping strategy, the number of models ({len(models)}) must equal the number of model_kwargs sets ({len(model_kwargs)})."
+                f"With 'one_to_one' mapping strategy, the number of models ({len(models)}) must equal the number of model_kwargs sets ({len(effective_kwargs_for_check)})."
+                f" Check your `model_kwargs` argument ({mkw_info}), or ensure it's None to use defaults."
             )
+    # For "combinations" strategy, specific checks for list type if provided will be done when building the iterator.
 
     # --- 1. Load Dataset ---
     if isinstance(dataset, str):
@@ -139,11 +147,25 @@ def collect_logprobs(
 
     # --- Determine Iteration Strategy ---
     if param_mapping_strategy == "one_to_one":
-        model_param_iterator = list(zip(models, model_params, model_kwargs))
+        # Effective params already determined and validated for 'one_to_one'
+        effective_model_params = model_params if not original_model_params_is_none else [{} for _ in range(len(models))]
+        effective_model_kwargs = model_kwargs if not original_model_kwargs_is_none else [{} for _ in range(len(models))]
+        
+        model_param_iterator = list(zip(models, effective_model_params, effective_model_kwargs))
         if verbose: print("Using one-to-one model-parameter mapping.")
-    else:  # combinations
-        model_param_iterator = list(product(models, model_params, model_kwargs))
-        if verbose: print("Using combinations mapping: running each model with each parameter set.")
+    else:  # "combinations"
+        # For combinations, if params/kwargs are None, they default to a list containing a single empty dict
+        effective_model_params = model_params if not original_model_params_is_none else [{}]
+        effective_model_kwargs = model_kwargs if not original_model_kwargs_is_none else [{}]
+
+        # Validate that if user provided model_params or model_kwargs, they are lists
+        if not original_model_params_is_none and not isinstance(model_params, list):
+            raise ValueError(f"If provided for 'combinations' strategy, 'model_params' must be a list of dicts. Got type: {type(model_params)}")
+        if not original_model_kwargs_is_none and not isinstance(model_kwargs, list):
+            raise ValueError(f"If provided for 'combinations' strategy, 'model_kwargs' must be a list of dicts. Got type: {type(model_kwargs)}")
+        
+        model_param_iterator = list(product(models, effective_model_params, effective_model_kwargs))
+        if verbose: print("Using combinations mapping: running each model with each parameter set and each model_kwargs set.")
 
     # --- Sequential Processing Loop with Progress Bar ---
     iterator = tqdm(model_param_iterator, desc="Processing models", total=len(model_param_iterator))
@@ -173,73 +195,68 @@ def collect_logprobs(
 
         # --- 3. Iterate through Dataset Items & Generate Prompts ---
         for item_index, item in enumerate(data_items):
-            history = item.get("conversation_history", "")
-            classes = item.get("candidate_classes", [])
-            raw_evidence = item.get("evidence", "")  # Can be str or list
+            item_histories = item.get("histories", [])
+            item_classes = item.get("classes", [])
+            raw_evidences = item.get("evidences", [])
             class_elicitation = item.get("class_elicitation", "")
             evidence_elicitation = item.get("evidence_elicitation", "")
-            class_type = item.get("class_type", "unknown")
+            item_class_category = item.get("class_category", "unknown")
 
-            # Normalize evidence into a list of dicts {category, evidence_text}
-            evidence_list = []
-            if isinstance(raw_evidence, str):
-                evidence_list.append(
-                    {"category": "general", "evidence_text": raw_evidence}
-                )
-            elif isinstance(raw_evidence, list):
-                for ev in raw_evidence:
-                    if isinstance(ev, dict) and "evidence_text" in ev:
-                        evidence_list.append(
-                            {
-                                "category": ev.get("category", "unknown"),
-                                "evidence_text": ev["evidence_text"],
-                            }
+            # Normalize evidence into a list of dicts {evidence_text}
+            normalized_evidence_list = []
+            if isinstance(raw_evidences, list):
+                for ev_item in raw_evidences:
+                    if isinstance(ev_item, dict) and "evidence_text" in ev_item:
+                        normalized_evidence_list.append(
+                            {"evidence_text": ev_item["evidence_text"]}
                         )
-                    elif isinstance(ev, str):  # Handle list of simple strings
-                        evidence_list.append(
-                            {"category": "general", "evidence_text": ev}
-                        )
+                    # If evidence is just a list of strings (old format, less likely with new structure)
+                    elif isinstance(ev_item, str):
+                         normalized_evidence_list.append({"evidence_text": ev_item})
+
             # Skip item if no valid evidence found after normalization
-            if not evidence_list:
-                # if verbose: print(f"Warning: No valid evidence found for item {item_index}. Skipping.") # Optional: uncomment if needed
+            if not normalized_evidence_list:
+                # if verbose: print(f"Warning: No valid evidence found for item {item_index}. Skipping.")
+                continue
+            
+            if not item_histories: # Skip if no histories
+                # if verbose: print(f"Warning: No histories found for item {item_index}. Skipping.")
                 continue
 
-            for clas, evidence_item in product(classes, evidence_list):
+            # Iterate over all combinations of history, class, and evidence
+            for current_history, clas, evidence_item in product(item_histories, item_classes, normalized_evidence_list):
                 evidence_text = evidence_item["evidence_text"]
-                evidence_category = evidence_item["category"]
+                # evidence_category is removed
 
                 # Metadata to associate results correctly
-                # Extract common fields to dedicated columns, store all params as serialized dict
                 metadata = {
                     "model_name": model_name,
                     "model_provider": model_provider,
                     "item_index": item_index,
-                    "class_type": class_type,
+                    "class_category": item_class_category,
                     "class": clas,
-                    "evidence_category": evidence_category,
                     "evidence_text": evidence_text,
-                    "conversation_history": history,
+                    "conversation_history": current_history,
                     "class_elicitation": class_elicitation,
                     "evidence_elicitation": evidence_elicitation,
                     "temperature": params.get("temperature", 1.0),
-                    "device": llm.device.type if hasattr(llm, "device") else params.get("device", "auto"),  # Get actual device used
-                    "model_params": json.dumps(params),  # Store params as JSON
-                    "model_kwargs": json.dumps(model_kw),  # Store model_kwargs as JSON
+                    "device": llm.device.type if hasattr(llm, "device") else params.get("device", "auto"),
+                    "model_params": json.dumps(params),
+                    "model_kwargs": json.dumps(model_kw),
                 }
-                # Use a hashable version of metadata for dict keys
                 metadata_key = tuple(sorted(metadata.items()))
 
                 # Define prompts and full texts *once* per base key
-                prior_prompt = history + class_elicitation
+                prior_prompt = current_history + class_elicitation
                 prior_full_text = prior_prompt + clas
 
                 likelihood_prompt = (
-                    history + class_elicitation + clas + evidence_elicitation
+                    current_history + class_elicitation + clas + evidence_elicitation
                 )
                 likelihood_full_text = likelihood_prompt + evidence_text
 
                 posterior_prompt = (
-                    history + evidence_elicitation + evidence_text + class_elicitation
+                    current_history + evidence_elicitation + evidence_text + class_elicitation
                 )
                 posterior_full_text = posterior_prompt + clas
 
@@ -415,10 +432,9 @@ def collect_logprobs(
     # Reorder columns for clarity
     core_cols = [
         "item_index",
-        "class_type",
+        "class_category",
         "class",
         "class_elicitation",
-        "evidence_category",
         "evidence_text",
         "evidence_elicitation",
         "conversation_history",
